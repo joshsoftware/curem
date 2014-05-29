@@ -6,6 +6,23 @@ import (
 )
 
 // contact type holds the fields related to a particular contact.
+// omitempty tag will make sure the database doesn't contain content like:
+//
+//   {
+//    _id: someID
+//    company: ABC
+//    Person: Xyz
+//    Phone:
+//    Skype:
+//    Country:
+//   }
+//Instead, it will store the above data as:
+//
+//   {
+//    _id: someID
+//    company: ABC
+//    Person: Xyz
+//   }
 type contact struct {
 	Id      bson.ObjectId `bson:"_id"`
 	Company string        `bson:"company,omitempty"`
