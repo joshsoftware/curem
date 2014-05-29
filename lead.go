@@ -6,15 +6,15 @@ import (
 )
 
 type lead struct {
-	Id                 bson.NewObjectId `bson:"_id"`
-	Contact            *mgo.DBRef       `bson:"contact,omitempty"`
-	Source             string           `bson:"source,omitempty"`
-	Owner              string           `bson:"owner,omitempty"`
-	Status             string           `bson:"status,omitempty"`
-	TeamSize           float            `bson:"teamsize,omitempty"`
-	RatePerHour        float            `bson:"rateperhour,omitempty"`
-	DurationInMonths   float            `bson:"durationinmonths,omitempty"`
-	EstimatedStartDate string           `bson:"estimatedstartdate,omitempty"`
+	Id                 bson.ObjectId `bson:"_id"`
+	Contact            *mgo.DBRef    `bson:"contact,omitempty"`
+	Source             string        `bson:"source,omitempty"`
+	Owner              string        `bson:"owner,omitempty"`
+	Status             string        `bson:"status,omitempty"`
+	TeamSize           float         `bson:"teamsize,omitempty"`
+	RatePerHour        float         `bson:"rateperhour,omitempty"`
+	DurationInMonths   float         `bson:"durationinmonths,omitempty"`
+	EstimatedStartDate string        `bson:"estimatedstartdate,omitempty"`
 	//Here we choose not to use time.Time because omitempty isn't supported for time.Time
 	Comments []string `bson:"comments,omitempty"`
 }
