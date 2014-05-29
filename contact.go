@@ -9,7 +9,7 @@ import (
 // omitempty tag will make sure the database doesn't contain content like:
 //
 //   {
-//    _id: someID
+//    _id: someId
 //    company: ABC
 //    Person: Xyz
 //    Phone:
@@ -19,7 +19,7 @@ import (
 //Instead, it will store the above data as:
 //
 //   {
-//    _id: someID
+//    _id: someId
 //    company: ABC
 //    Person: Xyz
 //   }
@@ -29,7 +29,7 @@ type contact struct {
 	Person  string        `bson:"person,omitempty"`
 	Email   string        `bson:"email,omitempty"`
 	Phone   string        `bson:"phone,omitempty"`
-	SkypeID string        `bson:"skypeid,omitempty"`
+	SkypeId string        `bson:"skypeid,omitempty"`
 	Country string        `bson:"country,omitempty"`
 }
 
@@ -43,7 +43,7 @@ func NewContact(c *mgo.Collection, company, person, email, phone, skypeid, count
 		Person:  person,
 		Email:   email,
 		Phone:   phone,
-		SkypeID: skypeid,
+		SkypeId: skypeid,
 		Country: country,
 	}
 	err := c.Insert(doc)
