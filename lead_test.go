@@ -18,10 +18,6 @@ func TestNewLead(t *testing.T) {
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
 	collection := sess.DB("test").C("newlead")
-	err = collection.DropCollection() //Fresh test DB collection
-	if err != nil {
-		t.Errorf("%s", err)
-	}
 	f := fakeContactId()
 	fakeLead, err := NewLead(
 		collection,
@@ -42,8 +38,11 @@ func TestNewLead(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-
 	fmt.Printf("%+v\n", fakeLead)
+	err = collection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
 }
 
 func fakeContactId() bson.ObjectId {
@@ -54,10 +53,6 @@ func fakeContactId() bson.ObjectId {
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
 	collection := sess.DB("test").C("newcontact")
-	err = collection.DropCollection() //Fresh test DB collection
-	if err != nil {
-		log.Println(err)
-	}
 	fakeContact, err := NewContact(
 		collection,
 		"Encom Inc.",
@@ -67,6 +62,10 @@ func fakeContactId() bson.ObjectId {
 		"",
 		"USA",
 	)
+	if err != nil {
+		log.Println(err)
+	}
+	err = collection.DropCollection() //Fresh test DB collection
 	if err != nil {
 		log.Println(err)
 	}

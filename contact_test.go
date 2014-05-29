@@ -15,10 +15,6 @@ func TestNewContact(t *testing.T) {
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
 	collection := sess.DB("test").C("newcontact")
-	err = collection.DropCollection() //Fresh test DB collection
-	if err != nil {
-		t.Errorf("%s", err)
-	}
 	fakeContact, err := NewContact(
 		collection,
 		"Encom Inc.",
@@ -42,5 +38,9 @@ func TestNewContact(t *testing.T) {
 
 	if fetchedContact != *fakeContact {
 		t.Errorf("inserted contact is not the fetched contact")
+	}
+	err = collection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
 	}
 }
