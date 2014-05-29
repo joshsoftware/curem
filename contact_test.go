@@ -31,12 +31,16 @@ func TestNewContact(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	var updatedcontact contact
-	err = sess.DB("test").C("newcontact").Find(bson.M{}).One(&updatedcontact)
+	var fetchedContact contact
+	err = sess.DB("test").C("newcontact").Find(bson.M{}).One(&fetchedContact)
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	if updatedcontact != *fakeContact {
-		t.Errorf("Inserted contact is not the fetched contact")
+
+	// fakeContact is a pointer, because NewContact returns a pointer to a struct of contact type.
+	// That's why we check fetchedContact with *fakeContact.
+
+	if fetchedContact != *fakeContact {
+		t.Errorf("inserted contact is not the fetched contact")
 	}
 }
