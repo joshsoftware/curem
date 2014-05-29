@@ -11,9 +11,9 @@ type lead struct {
 	Source             string        `bson:"source,omitempty"`
 	Owner              string        `bson:"owner,omitempty"`
 	Status             string        `bson:"status,omitempty"`
-	TeamSize           float         `bson:"teamsize,omitempty"`
-	RatePerHour        float         `bson:"rateperhour,omitempty"`
-	DurationInMonths   float         `bson:"durationinmonths,omitempty"`
+	TeamSize           float64       `bson:"teamsize,omitempty"`
+	RatePerHour        float64       `bson:"rateperhour,omitempty"`
+	DurationInMonths   float64       `bson:"durationinmonths,omitempty"`
 	EstimatedStartDate string        `bson:"estimatedstartdate,omitempty"`
 	//Here we choose not to use time.Time because omitempty isn't supported for time.Time
 	Comments []string `bson:"comments,omitempty"`
@@ -22,8 +22,8 @@ type lead struct {
 // NewLead takes the fields of a lead, initializes a struct of lead type and returns
 // the pointer to that struct.
 // Also, It inserts the lead data into a mongoDB collection, which is passed as the first parameter.
-func NewLead(c *mgo.Collection, r *mgo.DBRef, source, owner, status,
-	teamsize, rate, duration, start string, comments []string) (*lead, error) {
+func NewLead(c *mgo.Collection, r *mgo.DBRef, source, owner, status string,
+	teamsize, rate, duration float64, start string, comments []string) (*lead, error) {
 
 	doc := lead{
 		Id:                 bson.NewObjectId(),
