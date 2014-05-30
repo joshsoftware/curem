@@ -24,13 +24,13 @@ import (
 //    Person: Xyz
 //   }
 type contact struct {
-	Id      bson.ObjectId `bson:"_id"`
-	Company string        `bson:"company,omitempty"`
-	Person  string        `bson:"person,omitempty"`
-	Email   string        `bson:"email,omitempty"`
-	Phone   string        `bson:"phone,omitempty"`
-	SkypeId string        `bson:"skypeid,omitempty"`
-	Country string        `bson:"country,omitempty"`
+	Id      bson.ObjectId `bson:"_id"               json:"id"`
+	Company string        `bson:"company,omitempty" json:"company,omitempty"`
+	Person  string        `bson:"person,omitempty"  json:"person,omitempty"`
+	Email   string        `bson:"email,omitempty"   json:"email,omitempty"`
+	Phone   string        `bson:"phone,omitempty"   json:"phone,omitempty"`
+	SkypeId string        `bson:"skypeid,omitempty" json:"skypeid,omitempty"`
+	Country string        `bson:"country,omitempty" json:"country,omitempty"`
 }
 
 // NewContact takes the fields of a contact, initializes a struct of contact type and returns
