@@ -23,7 +23,7 @@ func TestNewLead(t *testing.T) {
 		collection,
 		&mgo.DBRef{
 			Collection: "newcontact",
-			Id:         f.Hex(),
+			Id:         f,
 			Database:   "test",
 		},
 		"Web",
@@ -39,7 +39,20 @@ func TestNewLead(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 	fmt.Printf("%+v\n", fakeLead)
+
+	var refContact contact
+	err = sess.FindRef(fakeLead.Contact).One(&refContact)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	fmt.Printf("%+v\n", refContact)
+
 	err = collection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	// Drop collection created by fakeContactId()
+	err = sess.DB("test").C("newcontact").DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
@@ -62,10 +75,6 @@ func fakeContactId() bson.ObjectId {
 		"",
 		"USA",
 	)
-	if err != nil {
-		log.Println(err)
-	}
-	err = collection.DropCollection() //Fresh test DB collection
 	if err != nil {
 		log.Println(err)
 	}
