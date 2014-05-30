@@ -16,9 +16,10 @@ func TestNewLead(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 	defer sess.Close()
+	sess.SetMode(mgo.Monotonic, true)
 	sess.SetSafe(&mgo.Safe{})
 	collection := sess.DB("test").C("newlead")
-	f := fakeContactId()
+	f := fakeContactId(sess)
 	fakeLead, err := NewLead(
 		collection,
 		&mgo.DBRef{
@@ -58,11 +59,8 @@ func TestNewLead(t *testing.T) {
 	}
 }
 
-func fakeContactId() bson.ObjectId {
-	sess, err := mgo.Dial("localhost")
-	if err != nil {
-		log.Println(err)
-	}
+func fakeContactId(s *mgo.Session) bson.ObjectId {
+	sess := s.Copy()
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
 	collection := sess.DB("test").C("newcontact")
