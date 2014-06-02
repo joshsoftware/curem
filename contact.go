@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/joshsoftware/curem/config"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 )
@@ -55,16 +56,9 @@ func NewContact(c *mgo.Collection, company, person, email, phone, skypeid, count
 
 // TODO(Hari): Move session logic into a config file and a separate function
 func GetContact(i bson.ObjectId) (*contact, error) {
-	sess, err := mgo.Dial("localhost")
-	if err != nil {
-		return &contact{}, err
-	}
-	defer sess.Close()
-	sess.SetMode(mgo.Monotonic, true)
-	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB("test").C("newcontact")
+	collection := config.Db.C("newcontact")
 	var c contact
-	err = collection.FindId(i).One(&c)
+	err := collection.FindId(i).One(&c)
 	if err != nil {
 		return &contact{}, err
 	}
