@@ -52,3 +52,21 @@ func NewContact(c *mgo.Collection, company, person, email, phone, skypeid, count
 	}
 	return &doc, nil
 }
+
+// TODO(Hari): Move session logic into a config file and a separate function
+func GetContact(i bson.ObjectId) (*contact, error) {
+	sess, err := mgo.Dial("localhost")
+	if err != nil {
+		return &contact{}, err
+	}
+	defer sess.Close()
+	sess.SetMode(mgo.Monotonic, true)
+	sess.SetSafe(&mgo.Safe{})
+	collection := sess.DB("test").C("newcontact")
+	var c contact
+	err = collection.FindId(i).One(&c)
+	if err != nil {
+		return &contact{}, err
+	}
+	return &c, nil
+}
