@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/joshsoftware/curem/config"
+
 	"log"
 
 	"labix.org/v2/mgo"
@@ -11,15 +13,8 @@ import (
 )
 
 func TestNewLead(t *testing.T) {
-	sess, err := mgo.Dial("localhost")
-	if err != nil {
-		t.Errorf("%s", err)
-	}
-	defer sess.Close()
-	sess.SetMode(mgo.Monotonic, true)
-	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB("test").C("newlead")
-	f := fakeContactId(sess)
+	collection := config.Db.C("newlead")
+	f := fakeContactId()
 	fakeLead, err := NewLead(
 		collection,
 		&mgo.DBRef{
@@ -42,7 +37,7 @@ func TestNewLead(t *testing.T) {
 	fmt.Printf("%+v\n", fakeLead)
 
 	var refContact contact
-	err = sess.FindRef(fakeLead.Contact).One(&refContact)
+	err = config.Session.FindRef(fakeLead.Contact).One(&refContact)
 	if err != nil {
 		t.Errorf("%s", err)
 	}
@@ -53,17 +48,14 @@ func TestNewLead(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 	// Drop collection created by fakeContactId()
-	err = sess.DB("test").C("newcontact").DropCollection()
+	err = config.Db.C("newcontact").DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
 }
 
-func fakeContactId(s *mgo.Session) bson.ObjectId {
-	sess := s.Copy()
-	defer sess.Close()
-	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB("test").C("newcontact")
+func fakeContactId() bson.ObjectId {
+	collection := config.Db.C("newcontact")
 	fakeContact, err := NewContact(
 		collection,
 		"Encom Inc.",
@@ -80,15 +72,8 @@ func fakeContactId(s *mgo.Session) bson.ObjectId {
 }
 
 func TestGetLead(t *testing.T) {
-	sess, err := mgo.Dial("localhost")
-	if err != nil {
-		t.Errorf("%s", err)
-	}
-	defer sess.Close()
-	sess.SetMode(mgo.Monotonic, true)
-	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB("test").C("newlead")
-	f := fakeContactId(sess)
+	collection := config.Db.C("newlead")
+	f := fakeContactId()
 	fakeLead, err := NewLead(
 		collection,
 		&mgo.DBRef{
@@ -121,22 +106,15 @@ func TestGetLead(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 	// Drop collection created by fakeContactId()
-	err = sess.DB("test").C("newcontact").DropCollection()
+	err = config.Db.C("newcontact").DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
 }
 
 func TestDeleteLead(t *testing.T) {
-	sess, err := mgo.Dial("localhost")
-	if err != nil {
-		t.Errorf("%s", err)
-	}
-	defer sess.Close()
-	sess.SetMode(mgo.Monotonic, true)
-	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB("test").C("newlead")
-	f := fakeContactId(sess)
+	collection := config.Db.C("newlead")
+	f := fakeContactId()
 	fakeLead, err := NewLead(
 		collection,
 		&mgo.DBRef{
@@ -172,7 +150,7 @@ func TestDeleteLead(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	contactCollection := sess.DB("test").C("newcontact")
+	contactCollection := config.Db.C("newcontact")
 	n, err = contactCollection.Count()
 	if err != nil {
 		t.Errorf("%s", err)
