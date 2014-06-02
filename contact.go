@@ -66,14 +66,7 @@ func GetContact(i bson.ObjectId) (*contact, error) {
 }
 
 func DeleteContact(i bson.ObjectId) error {
-	sess, err := mgo.Dial("localhost")
-	if err != nil {
-		return err
-	}
-	defer sess.Close()
-	sess.SetMode(mgo.Monotonic, true)
-	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB("test").C("newcontact")
-	err = collection.RemoveId(i)
+	collection := config.Db.C("newcontact")
+	err := collection.RemoveId(i)
 	return err
 }
