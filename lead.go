@@ -15,8 +15,7 @@ type lead struct {
 	RatePerHour        float64       `bson:"rateperhour,omitempty"        json:"rateperhour,omitempty"`
 	DurationInMonths   float64       `bson:"durationinmonths,omitempty"   json:"durationinmonths,omitempty"`
 	EstimatedStartDate string        `bson:"estimatedstartdate,omitempty" json:"estimatedstartdate,omitempty"`
-	//Here we choose not to use time.Time because omitempty isn't supported for time.Time
-	Comments []string `bson:"comments,omitempty"`
+	Comments           []string      `bson:"comments,omitempty"           json:"comments,omitempty"`
 }
 
 // NewLead takes the fields of a lead, initializes a struct of lead type and returns
