@@ -60,3 +60,16 @@ func GetLead(i bson.ObjectId) (*lead, error) {
 	}
 	return &l, nil
 }
+
+func DeleteLead(i bson.ObjectId) error {
+	sess, err := mgo.Dial("localhost")
+	if err != nil {
+		return err
+	}
+	defer sess.Close()
+	sess.SetMode(mgo.Monotonic, true)
+	sess.SetSafe(&mgo.Safe{})
+	collection := sess.DB("test").C("newlead")
+	err = collection.RemoveId(i)
+	return err
+}
