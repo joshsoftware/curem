@@ -78,3 +78,41 @@ func TestGetContact(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 }
+
+func TestDeleteContact(t *testing.T) {
+	sess, err := mgo.Dial("localhost")
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+	collection := sess.DB("test").C("newcontact")
+	fakeContact, err := NewContact(
+		collection,
+		"Encom Inc.",
+		"Flynn",
+		"flynn@encom.com",
+		"",
+		"",
+		"USA",
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	id := fakeContact.Id
+	err = DeleteContact(id)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	n, err := collection.Count()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	if n != 0 {
+		t.Errorf("expected 0 documents in the collection, but found %d", n)
+	}
+	err = collection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+}
