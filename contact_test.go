@@ -3,18 +3,12 @@ package main
 import (
 	"testing"
 
-	"labix.org/v2/mgo"
+	"github.com/joshsoftware/curem/config"
 	"labix.org/v2/mgo/bson"
 )
 
 func TestNewContact(t *testing.T) {
-	sess, err := mgo.Dial("localhost")
-	if err != nil {
-		t.Errorf("%s", err)
-	}
-	defer sess.Close()
-	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB("test").C("newcontact")
+	collection := config.Db.C("newcontact")
 	fakeContact, err := NewContact(
 		collection,
 		"Encom Inc.",
@@ -28,7 +22,7 @@ func TestNewContact(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 	var fetchedContact contact
-	err = sess.DB("test").C("newcontact").Find(bson.M{}).One(&fetchedContact)
+	err = collection.Find(bson.M{}).One(&fetchedContact)
 	if err != nil {
 		t.Errorf("%s", err)
 	}
@@ -46,13 +40,7 @@ func TestNewContact(t *testing.T) {
 }
 
 func TestGetContact(t *testing.T) {
-	sess, err := mgo.Dial("localhost")
-	if err != nil {
-		t.Errorf("%s", err)
-	}
-	defer sess.Close()
-	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB("test").C("newcontact")
+	collection := config.Db.C("newcontact")
 	fakeContact, err := NewContact(
 		collection,
 		"Encom Inc.",
@@ -80,13 +68,7 @@ func TestGetContact(t *testing.T) {
 }
 
 func TestDeleteContact(t *testing.T) {
-	sess, err := mgo.Dial("localhost")
-	if err != nil {
-		t.Errorf("%s", err)
-	}
-	defer sess.Close()
-	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB("test").C("newcontact")
+	collection := config.Db.C("newcontact")
 	fakeContact, err := NewContact(
 		collection,
 		"Encom Inc.",
