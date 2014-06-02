@@ -78,3 +78,51 @@ func fakeContactId(s *mgo.Session) bson.ObjectId {
 	}
 	return fakeContact.Id
 }
+
+func TestGetLead(t *testing.T) {
+	sess, err := mgo.Dial("localhost")
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	defer sess.Close()
+	sess.SetMode(mgo.Monotonic, true)
+	sess.SetSafe(&mgo.Safe{})
+	collection := sess.DB("test").C("newlead")
+	f := fakeContactId(sess)
+	fakeLead, err := NewLead(
+		collection,
+		&mgo.DBRef{
+			Collection: "newcontact",
+			Id:         f,
+			Database:   "test",
+		},
+		"Web",
+		"Hari",
+		"Warming Up",
+		2.5,
+		20,
+		3,
+		"25th June, 2014",
+		[]string{"Call back", "Based in mumbai"},
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	id := fakeLead.Id
+	fetchedLead, err := GetLead(id)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	if fetchedLead.Id != fakeLead.Id {
+		t.Errorf("Expected id of %v, but got %v", fakeLead.Id, fetchedLead.Id)
+	}
+	err = collection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	// Drop collection created by fakeContactId()
+	err = sess.DB("test").C("newcontact").DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+}
