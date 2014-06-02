@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/joshsoftware/curem/config"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 )
@@ -43,16 +44,8 @@ func NewLead(c *mgo.Collection, r *mgo.DBRef, source, owner, status string,
 	return &doc, nil
 }
 
-// TODO(Hari): Move session logic into a config file and a separate function
 func GetLead(i bson.ObjectId) (*lead, error) {
-	sess, err := mgo.Dial("localhost")
-	if err != nil {
-		return &lead{}, err
-	}
-	defer sess.Close()
-	sess.SetMode(mgo.Monotonic, true)
-	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB("test").C("newlead")
+	collection := config.Db.C("newlead")
 	var l lead
 	err = collection.FindId(i).One(&l)
 	if err != nil {
@@ -62,14 +55,7 @@ func GetLead(i bson.ObjectId) (*lead, error) {
 }
 
 func DeleteLead(i bson.ObjectId) error {
-	sess, err := mgo.Dial("localhost")
-	if err != nil {
-		return err
-	}
-	defer sess.Close()
-	sess.SetMode(mgo.Monotonic, true)
-	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB("test").C("newlead")
-	err = collection.RemoveId(i)
+	collection := config.Db.C("newlead")
+	err := collection.RemoveId(i)
 	return err
 }
