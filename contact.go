@@ -70,3 +70,16 @@ func GetContact(i bson.ObjectId) (*contact, error) {
 	}
 	return &c, nil
 }
+
+func DeleteContact(i bson.ObjectId) error {
+	sess, err := mgo.Dial("localhost")
+	if err != nil {
+		return err
+	}
+	defer sess.Close()
+	sess.SetMode(mgo.Monotonic, true)
+	sess.SetSafe(&mgo.Safe{})
+	collection := sess.DB("test").C("newcontact")
+	err = collection.RemoveId(i)
+	return err
+}
