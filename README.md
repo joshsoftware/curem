@@ -1,5 +1,7 @@
 # curem
 
+[![Build Status](https://drone.io/github.com/joshsoftware/curem/status.png)](https://drone.io/github.com/joshsoftware/curem/latest)
+
 **CU**&#8203;stomer **RE**&#8203;lationship **M**&#8203;anagement made easy. Curem is a light weight CRM written in Go, with jsonapi supportand backed with MongoDB. It can be consumed by any client which can understand and work with [JSONapi](http://jsonapi.org).
 
 Basically a lead has 2 sides to it: external and internal.
