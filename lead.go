@@ -47,7 +47,7 @@ func NewLead(c *mgo.Collection, r *mgo.DBRef, source, owner, status string,
 func GetLead(i bson.ObjectId) (*lead, error) {
 	collection := config.Db.C("newlead")
 	var l lead
-	err = collection.FindId(i).One(&l)
+	err := collection.FindId(i).One(&l)
 	if err != nil {
 		return &lead{}, err
 	}
