@@ -54,7 +54,6 @@ func NewContact(c *mgo.Collection, company, person, email, phone, skypeid, count
 	return &doc, nil
 }
 
-// TODO(Hari): Move session logic into a config file and a separate function
 func GetContact(i bson.ObjectId) (*contact, error) {
 	collection := config.Db.C("newcontact")
 	var c contact
