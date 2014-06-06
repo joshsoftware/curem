@@ -54,7 +54,8 @@ func GetLead(i bson.ObjectId) (*lead, error) {
 	return &l, nil
 }
 
-func DeleteLead(i bson.ObjectId) error {
+func (l *lead) Delete() error {
+	i := l.Id
 	collection := config.Db.C("newlead")
 	err := collection.RemoveId(i)
 	return err
