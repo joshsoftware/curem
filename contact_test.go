@@ -67,7 +67,7 @@ func TestGetContact(t *testing.T) {
 	}
 }
 
-func TestDeleteContact(t *testing.T) {
+func TestDelete(t *testing.T) {
 	collection := config.Db.C("newcontact")
 	fakeContact, err := NewContact(
 		collection,
@@ -81,8 +81,7 @@ func TestDeleteContact(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	id := fakeContact.Id
-	err = DeleteContact(id)
+	err = fakeContact.Delete()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
