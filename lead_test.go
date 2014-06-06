@@ -134,8 +134,7 @@ func TestDeleteLead(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	id := fakeLead.Id
-	err = DeleteLead(id)
+	err = fakeLead.Delete()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
