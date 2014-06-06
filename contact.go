@@ -64,7 +64,8 @@ func GetContact(i bson.ObjectId) (*contact, error) {
 	return &c, nil
 }
 
-func DeleteContact(i bson.ObjectId) error {
+func (c *contact) Delete() error {
+	i := c.Id
 	collection := config.Db.C("newcontact")
 	err := collection.RemoveId(i)
 	return err
