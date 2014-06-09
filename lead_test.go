@@ -55,9 +55,7 @@ func TestNewLead(t *testing.T) {
 }
 
 func fakeContactId() bson.ObjectId {
-	collection := config.Db.C("newcontact")
 	fakeContact, err := NewContact(
-		collection,
 		"Encom Inc.",
 		"Flynn",
 		"flynn@encom.com",
