@@ -10,7 +10,6 @@ import (
 func TestNewContact(t *testing.T) {
 	collection := config.Db.C("newcontact")
 	fakeContact, err := NewContact(
-		collection,
 		"Encom Inc.",
 		"Flynn",
 		"flynn@encom.com",
@@ -42,7 +41,6 @@ func TestNewContact(t *testing.T) {
 func TestGetContact(t *testing.T) {
 	collection := config.Db.C("newcontact")
 	fakeContact, err := NewContact(
-		collection,
 		"Encom Inc.",
 		"Flynn",
 		"flynn@encom.com",
@@ -70,7 +68,6 @@ func TestGetContact(t *testing.T) {
 func TestDelete(t *testing.T) {
 	collection := config.Db.C("newcontact")
 	fakeContact, err := NewContact(
-		collection,
 		"Encom Inc.",
 		"Flynn",
 		"flynn@encom.com",

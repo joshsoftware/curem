@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/joshsoftware/curem/config"
-	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 )
 
@@ -17,7 +16,7 @@ import (
 //    Skype:
 //    Country:
 //   }
-//Instead, it will store the above data as:
+// Instead, it will store the above data as:
 //
 //   {
 //    _id: someId
@@ -37,7 +36,8 @@ type contact struct {
 // NewContact takes the fields of a contact, initializes a struct of contact type and returns
 // the pointer to that struct.
 // Also, It inserts the contact data into a mongoDB collection, which is passed as the first parameter.
-func NewContact(c *mgo.Collection, company, person, email, phone, skypeid, country string) (*contact, error) {
+func NewContact(company, person, email, phone, skypeid, country string) (*contact, error) {
+	collection := config.Db.C("newcontact")
 	doc := contact{
 		Id:      bson.NewObjectId(),
 		Company: company,
@@ -47,7 +47,7 @@ func NewContact(c *mgo.Collection, company, person, email, phone, skypeid, count
 		SkypeId: skypeid,
 		Country: country,
 	}
-	err := c.Insert(doc)
+	err := collection.Insert(doc)
 	if err != nil {
 		return &contact{}, err
 	}
