@@ -1,41 +1,33 @@
 package config
 
 import (
-	"io/ioutil"
 	"log"
-
-	"gopkg.in/yaml.v1"
 
 	"labix.org/v2/mgo"
 )
 
 var (
-	Config  *AppConfig
-	Session *mgo.Session
-	Db      *mgo.Database
+	Session            *mgo.Session
+	Db                 *mgo.Database
+	LeadsCollection    *mgo.Collection
+	ContactsCollection *mgo.Collection
 )
 
-type AppConfig struct {
-	Mongo struct {
-		Name string
-		Url  string
+func Configure(options map[string]string) {
+	if options["name"] == "" {
+		log.Fatalf("Configure requires the name of the MongoDB server")
 	}
-}
+	if options["url"] == "" {
+		log.Fatalf("Configure requires the url of the MongoDB server")
+	}
+	if options["leads"] == "" {
+		log.Fatalf("Configure requires the name of the leads collection")
+	}
+	if options["contacts"] == "" {
+		log.Fatalf("Configure requires the name of the contacts collection")
+	}
 
-func loadConfig() {
-	file, err := ioutil.ReadFile("config.yaml")
-	if err != nil {
-		log.Fatalf("error opening config.yaml: %s", err)
-	}
-	Config = new(AppConfig)
-	if err := yaml.Unmarshal(file, &Config); err != nil {
-		log.Fatalf("error parsing config.yaml: %s", err)
-	}
-}
-
-func init() {
-	loadConfig()
-	session, err := mgo.Dial(Config.Mongo.Url)
+	session, err := mgo.Dial(options["url"])
 	if err != nil {
 		panic(err)
 	}
@@ -49,6 +41,9 @@ func init() {
 	// Make the session check for errors, without imposing further constraints.
 	session.SetSafe(&mgo.Safe{})
 
-	Db = session.DB(Config.Mongo.Name)
 	Session = session
+	Db = session.DB(options["name"])
+	LeadsCollection = Db.C(options["leads"])
+	ContactsCollection = Db.C(options["contacts"])
+
 }

@@ -7,8 +7,16 @@ import (
 )
 
 func main() {
-	fmt.Printf("%+v", config.Db)
-	fmt.Println()
-	fmt.Printf("%+v", config.Session)
-	fmt.Println()
+	c := make(map[string]string)
+	c["name"] = "hello"
+	c["url"] = "localhost"
+	c["leads"] = "newlead"
+	c["contacts"] = "newcontact"
+
+	config.Configure(c)
+
+	fmt.Printf("%+v\n", config.Db)
+	fmt.Printf("%+v\n", config.Session)
+	fmt.Printf("%+v\n", config.LeadsCollection)
+	fmt.Printf("%+v\n", config.ContactsCollection)
 }
