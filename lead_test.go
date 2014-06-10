@@ -12,7 +12,6 @@ import (
 )
 
 func TestNewLead(t *testing.T) {
-	collection := config.Db.C("newlead")
 	f := fakeContactId()
 	fakeLead, err := NewLead(
 		f,
@@ -31,19 +30,19 @@ func TestNewLead(t *testing.T) {
 	fmt.Printf("%+v\n", fakeLead)
 
 	var refContact contact
-	err = config.Db.C("newcontact").FindId(fakeLead.ContactId).One(&refContact)
+	err = config.ContactsCollection.FindId(fakeLead.ContactId).One(&refContact)
 	if err != nil {
 		t.Errorf("%s", err)
 	}
 	fmt.Printf("%+v\n", refContact)
 
-	err = collection.DropCollection()
+	err = config.LeadsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
 
 	// Drop collection created by fakeContactId()
-	err = config.Db.C("newcontact").DropCollection()
+	err = config.ContactsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
@@ -88,19 +87,18 @@ func TestGetLead(t *testing.T) {
 	if fetchedLead.Id != fakeLead.Id {
 		t.Errorf("Expected id of %v, but got %v", fakeLead.Id, fetchedLead.Id)
 	}
-	err = config.Db.C("newlead").DropCollection()
+	err = config.LeadsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
 	// Drop collection created by fakeContactId()
-	err = config.Db.C("newcontact").DropCollection()
+	err = config.ContactsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
 }
 
 func TestDeleteLead(t *testing.T) {
-	collection := config.Db.C("newlead")
 	f := fakeContactId()
 	fakeLead, err := NewLead(
 		f,
@@ -120,26 +118,26 @@ func TestDeleteLead(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	n, err := collection.Count()
+	n, err := config.LeadsCollection.Count()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
 	if n != 0 {
 		t.Errorf("expected 0 documents in the collection, but found %d", n)
 	}
-	err = collection.DropCollection()
+	err = config.LeadsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	contactCollection := config.Db.C("newcontact")
-	n, err = contactCollection.Count()
+
+	n, err = config.ContactsCollection.Count()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
 	if n != 1 {
 		t.Errorf("expected 1 document in the collection, but found %d", n)
 	}
-	err = contactCollection.DropCollection()
+	err = config.ContactsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
