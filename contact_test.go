@@ -7,6 +7,17 @@ import (
 	"labix.org/v2/mgo/bson"
 )
 
+// This gives a benefit that we can use a test database when `go test` is run.
+func init() {
+	c := make(map[string]string)
+	c["name"] = "test"
+	c["url"] = "localhost"
+	c["leads"] = "newlead"
+	c["contacts"] = "newcontact"
+
+	config.Configure(c)
+}
+
 func TestNewContact(t *testing.T) {
 	collection := config.Db.C("newcontact")
 	fakeContact, err := NewContact(
