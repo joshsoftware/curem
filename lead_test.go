@@ -8,7 +8,6 @@ import (
 
 	"log"
 
-	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 )
 
@@ -16,12 +15,7 @@ func TestNewLead(t *testing.T) {
 	collection := config.Db.C("newlead")
 	f := fakeContactId()
 	fakeLead, err := NewLead(
-		collection,
-		&mgo.DBRef{
-			Collection: "newcontact",
-			Id:         f,
-			Database:   "test",
-		},
+		f,
 		"Web",
 		"Hari",
 		"Warming Up",
@@ -37,7 +31,7 @@ func TestNewLead(t *testing.T) {
 	fmt.Printf("%+v\n", fakeLead)
 
 	var refContact contact
-	err = config.Session.FindRef(fakeLead.Contact).One(&refContact)
+	err = config.Db.C("newcontact").FindId(fakeLead.ContactId).One(&refContact)
 	if err != nil {
 		t.Errorf("%s", err)
 	}
@@ -47,6 +41,7 @@ func TestNewLead(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
+
 	// Drop collection created by fakeContactId()
 	err = config.Db.C("newcontact").DropCollection()
 	if err != nil {
@@ -70,15 +65,9 @@ func fakeContactId() bson.ObjectId {
 }
 
 func TestGetLead(t *testing.T) {
-	collection := config.Db.C("newlead")
 	f := fakeContactId()
 	fakeLead, err := NewLead(
-		collection,
-		&mgo.DBRef{
-			Collection: "newcontact",
-			Id:         f,
-			Database:   "test",
-		},
+		f,
 		"Web",
 		"Hari",
 		"Warming Up",
@@ -99,7 +88,7 @@ func TestGetLead(t *testing.T) {
 	if fetchedLead.Id != fakeLead.Id {
 		t.Errorf("Expected id of %v, but got %v", fakeLead.Id, fetchedLead.Id)
 	}
-	err = collection.DropCollection()
+	err = config.Db.C("newlead").DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
@@ -114,12 +103,7 @@ func TestDeleteLead(t *testing.T) {
 	collection := config.Db.C("newlead")
 	f := fakeContactId()
 	fakeLead, err := NewLead(
-		collection,
-		&mgo.DBRef{
-			Collection: "newcontact",
-			Id:         f,
-			Database:   "test",
-		},
+		f,
 		"Web",
 		"Hari",
 		"Warming Up",
