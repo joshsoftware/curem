@@ -7,7 +7,7 @@ import (
 	"labix.org/v2/mgo/bson"
 )
 
-// This gives a benefit that we can use a test database when `go test` is run.
+// This ensures that we use a separate test database when `go test` is run.
 func init() {
 	c := make(map[string]string)
 	c["name"] = "test"
@@ -19,7 +19,6 @@ func init() {
 }
 
 func TestNewContact(t *testing.T) {
-	collection := config.Db.C("newcontact")
 	fakeContact, err := NewContact(
 		"Encom Inc.",
 		"Flynn",
@@ -32,7 +31,7 @@ func TestNewContact(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 	var fetchedContact contact
-	err = collection.Find(bson.M{}).One(&fetchedContact)
+	err = config.ContactsCollection.Find(bson.M{}).One(&fetchedContact)
 	if err != nil {
 		t.Errorf("%s", err)
 	}
@@ -43,14 +42,13 @@ func TestNewContact(t *testing.T) {
 	if fetchedContact != *fakeContact {
 		t.Errorf("inserted contact is not the fetched contact")
 	}
-	err = collection.DropCollection()
+	err = config.ContactsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
 }
 
 func TestGetContact(t *testing.T) {
-	collection := config.Db.C("newcontact")
 	fakeContact, err := NewContact(
 		"Encom Inc.",
 		"Flynn",
@@ -70,14 +68,13 @@ func TestGetContact(t *testing.T) {
 	if *fakeContact != *fetchedContact {
 		t.Errorf("Expected %+v, but got %+v\n", *fakeContact, *fetchedContact)
 	}
-	err = collection.DropCollection()
+	err = config.ContactsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
 }
 
 func TestDelete(t *testing.T) {
-	collection := config.Db.C("newcontact")
 	fakeContact, err := NewContact(
 		"Encom Inc.",
 		"Flynn",
@@ -93,14 +90,14 @@ func TestDelete(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	n, err := collection.Count()
+	n, err := config.ContactsCollection.Count()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
 	if n != 0 {
 		t.Errorf("expected 0 documents in the collection, but found %d", n)
 	}
-	err = collection.DropCollection()
+	err = config.ContactsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
