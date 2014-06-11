@@ -42,6 +42,7 @@ func NewLead(cid bson.ObjectId, source, owner, status string, teamsize, rate, du
 	return &doc, nil
 }
 
+// GetLead takes the lead Id as an argument and returns a pointer to a lead object.
 func GetLead(i bson.ObjectId) (*lead, error) {
 	var l lead
 	err := config.LeadsCollection.FindId(i).One(&l)
@@ -51,11 +52,15 @@ func GetLead(i bson.ObjectId) (*lead, error) {
 	return &l, nil
 }
 
+// Update updates the lead in the database.
+// First, fetch a lead from the database and change the necessary fields.
+// Then call the Update method on that lead object.
 func (l *lead) Update() error {
 	_, err := config.LeadsCollection.UpsertId(l.Id, l)
 	return err
 }
 
+// Delete deletes the lead from the database.
 func (l *lead) Delete() error {
 	return config.LeadsCollection.RemoveId(l.Id)
 }

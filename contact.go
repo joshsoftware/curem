@@ -52,6 +52,7 @@ func NewContact(company, person, email, phone, skypeid, country string) (*contac
 	return &doc, nil
 }
 
+// GetContact takes the contact Id as an argument and returns a pointer to a contact object.
 func GetContact(i bson.ObjectId) (*contact, error) {
 	var c contact
 	err := config.ContactsCollection.FindId(i).One(&c)
@@ -63,7 +64,7 @@ func GetContact(i bson.ObjectId) (*contact, error) {
 
 // Update updates the contact in the database.
 // First, fetch a contact from the database and change the necessary fields.
-// Then call the Update method on the contact object.
+// Then call the Update method on that contact object.
 func (c *contact) Update() error {
 	_, err := config.ContactsCollection.UpsertId(c.Id, c)
 	return err
