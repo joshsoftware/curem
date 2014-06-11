@@ -51,6 +51,11 @@ func GetLead(i bson.ObjectId) (*lead, error) {
 	return &l, nil
 }
 
+func (l *lead) Update() error {
+	_, err := config.LeadsCollection.UpsertId(l.Id, l)
+	return err
+}
+
 func (l *lead) Delete() error {
 	return config.LeadsCollection.RemoveId(l.Id)
 }
