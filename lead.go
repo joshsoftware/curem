@@ -20,10 +20,9 @@ type lead struct {
 
 // NewLead takes the fields of a lead, initializes a struct of lead type and returns
 // the pointer to that struct.
-// Also, It inserts the lead data into a mongoDB collection, which is passed as the first parameter.
+// Also, It inserts the lead object into the database.
 func NewLead(cid bson.ObjectId, source, owner, status string, teamsize, rate, duration float64,
 	start string, comments []string) (*lead, error) {
-	collection := config.Db.C("newlead")
 	doc := lead{
 		Id:                 bson.NewObjectId(),
 		ContactId:          cid,
@@ -36,7 +35,7 @@ func NewLead(cid bson.ObjectId, source, owner, status string, teamsize, rate, du
 		EstimatedStartDate: start,
 		Comments:           comments,
 	}
-	err := collection.Insert(doc)
+	err := config.LeadsCollection.Insert(doc)
 	if err != nil {
 		return &lead{}, err
 	}
@@ -44,9 +43,8 @@ func NewLead(cid bson.ObjectId, source, owner, status string, teamsize, rate, du
 }
 
 func GetLead(i bson.ObjectId) (*lead, error) {
-	collection := config.Db.C("newlead")
 	var l lead
-	err := collection.FindId(i).One(&l)
+	err := config.LeadsCollection.FindId(i).One(&l)
 	if err != nil {
 		return &lead{}, err
 	}
@@ -54,8 +52,5 @@ func GetLead(i bson.ObjectId) (*lead, error) {
 }
 
 func (l *lead) Delete() error {
-	i := l.Id
-	collection := config.Db.C("newlead")
-	err := collection.RemoveId(i)
-	return err
+	return config.LeadsCollection.RemoveId(l.Id)
 }
