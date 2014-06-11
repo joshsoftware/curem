@@ -35,9 +35,7 @@ type contact struct {
 
 // NewContact takes the fields of a contact, initializes a struct of contact type and returns
 // the pointer to that struct.
-// Also, It inserts the contact data into a mongoDB collection, which is passed as the first parameter.
 func NewContact(company, person, email, phone, skypeid, country string) (*contact, error) {
-	collection := config.Db.C("newcontact")
 	doc := contact{
 		Id:      bson.NewObjectId(),
 		Company: company,
@@ -47,7 +45,7 @@ func NewContact(company, person, email, phone, skypeid, country string) (*contac
 		SkypeId: skypeid,
 		Country: country,
 	}
-	err := collection.Insert(doc)
+	err := config.ContactsCollection.Insert(doc)
 	if err != nil {
 		return &contact{}, err
 	}
@@ -55,18 +53,23 @@ func NewContact(company, person, email, phone, skypeid, country string) (*contac
 }
 
 func GetContact(i bson.ObjectId) (*contact, error) {
-	collection := config.Db.C("newcontact")
 	var c contact
-	err := collection.FindId(i).One(&c)
+	err := config.ContactsCollection.FindId(i).One(&c)
 	if err != nil {
 		return &contact{}, err
 	}
 	return &c, nil
 }
 
-func (c *contact) Delete() error {
-	i := c.Id
-	collection := config.Db.C("newcontact")
-	err := collection.RemoveId(i)
+// Update updates the contact in the database.
+// First, fetch a contact from the database and change the necessary fields.
+// Then call the Update method on the contact object.
+func (c *contact) Update() error {
+	_, err := config.ContactsCollection.UpsertId(c.Id, c)
 	return err
+}
+
+// Delete deletes the contact from the database.
+func (c *contact) Delete() error {
+	return config.ContactsCollection.RemoveId(c.Id)
 }
