@@ -74,6 +74,33 @@ func TestGetContact(t *testing.T) {
 	}
 }
 
+func TestUpdateContact(t *testing.T) {
+	fakeContact, err := NewContact(
+		"Encom Inc.",
+		"Flynn",
+		"flynn@encom.com",
+		"",
+		"",
+		"USA",
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	fakeContact.Country = "India"
+	fakeContact.Update()
+	fetchedContact, err := GetContact(fakeContact.Id)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	if fetchedContact.Country != "India" {
+		t.Errorf("%s", "contact not updated")
+	}
+	err = config.ContactsCollection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+}
+
 func TestDelete(t *testing.T) {
 	fakeContact, err := NewContact(
 		"Encom Inc.",
