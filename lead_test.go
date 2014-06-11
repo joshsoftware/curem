@@ -98,6 +98,44 @@ func TestGetLead(t *testing.T) {
 	}
 }
 
+func TestUpdateLead(t *testing.T) {
+	f := fakeContactId()
+	fakeLead, err := NewLead(
+		f,
+		"Web",
+		"Hari",
+		"Warming Up",
+		2.5,
+		20,
+		3,
+		"25th June, 2014",
+		[]string{"Call back", "Based in mumbai"},
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	fakeLead.Status = "Won"
+	err = fakeLead.Update()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	fetchedLead, err := GetLead(fakeLead.Id)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	if fetchedLead.Status != "Won" {
+		t.Errorf("%s", "lead not updated")
+	}
+	err = config.LeadsCollection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	err = config.ContactsCollection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+}
+
 func TestDeleteLead(t *testing.T) {
 	f := fakeContactId()
 	fakeLead, err := NewLead(
