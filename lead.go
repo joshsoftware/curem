@@ -7,7 +7,7 @@ import (
 
 type lead struct {
 	Id                 bson.ObjectId `bson:"_id"                          json:"id"`
-	ContactId          bson.ObjectId `bson:"contact,omitempty"            json:"contact,omitempty"`
+	ContactId          bson.ObjectId `bson:"contactId,omitempty"          json:"contactId,omitempty"`
 	Source             string        `bson:"source,omitempty"             json:"source,omitempty"`
 	Owner              string        `bson:"owner,omitempty"              json:"owner,omitempty"`
 	Status             string        `bson:"status,omitempty"             json:"status,omitempty"`
@@ -56,7 +56,7 @@ func GetLead(i bson.ObjectId) (*lead, error) {
 // First, fetch a lead from the database and change the necessary fields.
 // Then call the Update method on that lead object.
 func (l *lead) Update() error {
-	_, err := config.LeadsCollection.UpsertId(l.Id, l)
+	err := config.LeadsCollection.UpdateId(l.Id, l)
 	return err
 }
 

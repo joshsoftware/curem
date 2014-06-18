@@ -66,7 +66,7 @@ func GetContact(i bson.ObjectId) (*contact, error) {
 // First, fetch a contact from the database and change the necessary fields.
 // Then call the Update method on that contact object.
 func (c *contact) Update() error {
-	_, err := config.ContactsCollection.UpsertId(c.Id, c)
+	err := config.ContactsCollection.UpdateId(c.Id, c)
 	return err
 }
 
