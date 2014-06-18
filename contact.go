@@ -62,6 +62,16 @@ func GetContact(i bson.ObjectId) (*contact, error) {
 	return &c, nil
 }
 
+// GetAllContacts fetches all the contacts from the database.
+func GetAllContacts() ([]contact, error) {
+	var c []contact
+	err := config.ContactsCollection.Find(nil).All(&c)
+	if err != nil {
+		return []contact{}, err
+	}
+	return c, nil
+}
+
 // Update updates the contact in the database.
 // First, fetch a contact from the database and change the necessary fields.
 // Then call the Update method on that contact object.

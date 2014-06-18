@@ -74,6 +74,43 @@ func TestGetContact(t *testing.T) {
 	}
 }
 
+func TestGetAllContacts(t *testing.T) {
+	_, err := NewContact(
+		"Encom Inc.",
+		"Sam Flynn",
+		"samflynn@encom.com",
+		"103-345-456",
+		"sam_flynn",
+		"USA",
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	_, err = NewContact(
+		"Encom Inc.",
+		"Kevin Flynn",
+		"kevinflynn@encom.com",
+		"234-877-988",
+		"kevin_flynn",
+		"USA",
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+
+	fetchedContacts, err := GetAllContacts()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	if len(fetchedContacts) != 2 {
+		t.Errorf("expected 2 contacts, but got %d", len(fetchedContacts))
+	}
+	err = config.ContactsCollection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+}
+
 func TestUpdateContact(t *testing.T) {
 	fakeContact, err := NewContact(
 		"Encom Inc.",
