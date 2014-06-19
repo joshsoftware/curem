@@ -52,6 +52,16 @@ func GetLead(i bson.ObjectId) (*lead, error) {
 	return &l, nil
 }
 
+// GetAllLeads fetches all the leads from the database.
+func GetAllLeads() ([]lead, error) {
+	var l []lead
+	err := config.LeadsCollection.Find(nil).All(&l)
+	if err != nil {
+		return []lead{}, err
+	}
+	return l, nil
+}
+
 // Update updates the lead in the database.
 // First, fetch a lead from the database and change the necessary fields.
 // Then call the Update method on that lead object.

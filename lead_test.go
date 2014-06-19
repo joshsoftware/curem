@@ -27,6 +27,7 @@ func TestNewLead(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
+
 	fmt.Printf("%+v\n", fakeLead)
 
 	var refContact contact
@@ -93,6 +94,54 @@ func TestGetLead(t *testing.T) {
 	}
 	// Drop collection created by fakeContactId()
 	err = config.ContactsCollection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+}
+
+func TestGetAllLeads(t *testing.T) {
+	f := fakeContactId()
+	_, err := NewLead(
+		f,
+		"Web",
+		"Hari",
+		"Warming Up",
+		2.5,
+		20,
+		3,
+		"25th June, 2014",
+		[]string{"Call back", "Based in mumbai"},
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	f = fakeContactId()
+	_, err = NewLead(
+		f,
+		"Referral",
+		"Hari",
+		"Won",
+		4,
+		20,
+		3,
+		"5th July, 2014",
+		[]string{"Discuss technical constraints"},
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	fetchedLeads, err := GetAllLeads()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	if len(fetchedLeads) != 2 {
+		t.Errorf("expected 2 leads, but got %d", len(fetchedLeads))
+	}
+	err = config.ContactsCollection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	err = config.LeadsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
