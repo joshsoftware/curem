@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"labix.org/v2/mgo/bson"
-
 	"github.com/gorilla/mux"
+
+	"labix.org/v2/mgo/bson"
 )
 
 var r *mux.Router
@@ -54,11 +54,13 @@ func getContactsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	c, err := GetAllContacts()
 	if err != nil {
-		log.Fatalf("%s", err)
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	enc := json.NewEncoder(w)
 	if err = enc.Encode(c); err != nil {
 		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
@@ -79,11 +81,13 @@ func postContactsHandler(w http.ResponseWriter, r *http.Request) {
 	var c contact
 	err := decoder.Decode(&c)
 	if err != nil {
-		log.Fatalf("%s", err)
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	_, err = NewContact(c.Company, c.Person, c.Email, c.Phone, c.SkypeId, c.Country)
 	if err != nil {
-		log.Fatalf("%s", err)
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
@@ -108,10 +112,12 @@ func getContactHandler(w http.ResponseWriter, r *http.Request) {
 	id := bson.ObjectIdHex(i)
 	c, err := GetContact(id)
 	if err != nil {
-		log.Fatalf("%s", err)
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	enc := json.NewEncoder(w)
 	if err = enc.Encode(c); err != nil {
 		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
