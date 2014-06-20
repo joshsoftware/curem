@@ -15,6 +15,7 @@ var r *mux.Router
 func init() {
 	r = mux.NewRouter()
 	r.HandleFunc("/contacts", getContactsHandler).Methods("GET")
+	r.HandleFunc("/contacts", postContactsHandler).Methods("POST")
 	r.HandleFunc("/contacts/{id}", getContactHandler).Methods("GET")
 }
 
@@ -58,6 +59,31 @@ func getContactsHandler(w http.ResponseWriter, r *http.Request) {
 	enc := json.NewEncoder(w)
 	if err = enc.Encode(c); err != nil {
 		log.Println(err)
+	}
+}
+
+// postContactsHandler creates a new contact in the database.
+// URL: POST /contacts
+// Request:
+// {
+//   "company": "Encom Inc.",
+//   "person": "Sam Flynn",
+//   "email": "samflynn@encom.com",
+//   "phone": "103-345-456",
+//   "skypeid": "sam_flynn",
+//   "country": "USA"
+// }
+// Response: HTTP 200
+func postContactsHandler(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var c contact
+	err := decoder.Decode(&c)
+	if err != nil {
+		log.Fatalf("%s", err)
+	}
+	_, err = NewContact(c.Company, c.Person, c.Email, c.Phone, c.SkypeId, c.Country)
+	if err != nil {
+		log.Fatalf("%s", err)
 	}
 }
 
