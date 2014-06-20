@@ -38,7 +38,6 @@ func init() {
 //    "phone": "103-345-456",
 //    "skypeid": "sam_flynn",
 //    "country": "USA"
-//    "slug": "sam-flynn"
 //  },
 //  {
 //    "id": "53a14760e3bdea4286000004",
