@@ -42,17 +42,22 @@ type contact struct {
 	Country string        `bson:"country,omitempty" json:"country,omitempty"`
 }
 
+func validateContact(c *contact) error {
+	if c.Person == "" {
+		err := errors.New("person can't be empty")
+		return err
+	}
+	if c.Email == "" {
+		err := errors.New("email can't be empty")
+		return err
+	}
+
+	return nil
+}
+
 // NewContact takes the fields of a contact, initializes a struct of contact type and returns
 // the pointer to that struct.
 func NewContact(company, person, email, phone, skypeid, country string) (*contact, error) {
-	if person == "" {
-		err := errors.New("person can't be empty")
-		return &contact{}, err
-	}
-	if email == "" {
-		err := errors.New("email can't be empty")
-		return &contact{}, err
-	}
 	doc := contact{
 		Id:      bson.NewObjectId(),
 		Company: company,
@@ -62,6 +67,7 @@ func NewContact(company, person, email, phone, skypeid, country string) (*contac
 		SkypeId: skypeid,
 		Country: country,
 	}
+	validateContact(&doc)
 	slugify(&doc)
 	err := config.ContactsCollection.Insert(doc)
 	if err != nil {
