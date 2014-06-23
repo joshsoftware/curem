@@ -71,6 +71,17 @@ func TestValidateNewContact(t *testing.T) {
 	if err == nil {
 		t.Errorf("%s", "error shouldn't be nil when email is empty")
 	}
+	_, err = NewContact(
+		"Encom Inc.",
+		"Sam Flynn",
+		"x@.xyzc.com",
+		"",
+		"",
+		"USA",
+	)
+	if err == nil {
+		t.Errorf("%s", "error shouldn't be nil when email is invalid")
+	}
 }
 
 func TestGetContact(t *testing.T) {
