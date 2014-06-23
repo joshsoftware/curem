@@ -16,11 +16,6 @@ func main() {
 
 	config.Configure(c)
 
-	// cacheSlugs() needs to be called after configuration.
-	// We can't call cacheSlugs() in an init function because
-	// the database won't be setup during init.
-	cacheSlugs()
-
 	// r is a *mux.Router defined in contact_api.go
 	http.ListenAndServe(":3000", r)
 }
