@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"math/rand"
+	"net/mail"
 	"strconv"
 	"time"
 
@@ -49,6 +50,9 @@ func validateContact(c *contact) error {
 	}
 	if c.Email == "" {
 		err := errors.New("email can't be empty")
+		return err
+	}
+	if _, err := mail.ParseAddress(c.Email); err != nil {
 		return err
 	}
 
