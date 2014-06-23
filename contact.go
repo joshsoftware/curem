@@ -33,14 +33,16 @@ import (
 //    Person: Xyz
 //   }
 type contact struct {
-	Id      bson.ObjectId `bson:"_id"               json:"id"`
-	Company string        `bson:"company,omitempty" json:"company,omitempty"`
-	Person  string        `bson:"person,omitempty"  json:"person,omitempty"`
-	Slug    string        `bson:"slug,omitempty"    json:"slug,omitempty"`
-	Email   string        `bson:"email,omitempty"   json:"email,omitempty"`
-	Phone   string        `bson:"phone,omitempty"   json:"phone,omitempty"`
-	SkypeId string        `bson:"skypeid,omitempty" json:"skypeid,omitempty"`
-	Country string        `bson:"country,omitempty" json:"country,omitempty"`
+	Id        bson.ObjectId `bson:"_id"                  json:"id"`
+	Company   string        `bson:"company,omitempty"    json:"company,omitempty"`
+	Person    string        `bson:"person,omitempty"     json:"person,omitempty"`
+	Slug      string        `bson:"slug,omitempty"       json:"slug,omitempty"`
+	Email     string        `bson:"email,omitempty"      json:"email,omitempty"`
+	Phone     string        `bson:"phone,omitempty"      json:"phone,omitempty"`
+	SkypeId   string        `bson:"skypeid,omitempty"    json:"skypeid,omitempty"`
+	Country   string        `bson:"country,omitempty"    json:"country,omitempty"`
+	CreatedAt time.Time     `bson:"createdAt,omitempty"  json:"createdAt,omitempty"`
+	UpdatedAt time.Time     `bson:"updatedAt,omitempty"  json:"updatedAt,omitempty"`
 }
 
 func validateContact(c *contact) error {
@@ -75,6 +77,10 @@ func NewContact(company, person, email, phone, skypeid, country string) (*contac
 		return &contact{}, err
 	}
 	slugify(&doc)
+
+	doc.CreatedAt = doc.Id.Time()
+	doc.UpdatedAt = doc.CreatedAt
+
 	err := config.ContactsCollection.Insert(doc)
 	if err != nil {
 		return &contact{}, err
@@ -106,6 +112,7 @@ func GetAllContacts() ([]contact, error) {
 // First, fetch a contact from the database and change the necessary fields.
 // Then call the Update method on that contact object.
 func (c *contact) Update() error {
+	c.UpdatedAt = bson.Now()
 	err := config.ContactsCollection.UpdateId(c.Id, c)
 	return err
 }
