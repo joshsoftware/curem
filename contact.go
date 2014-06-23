@@ -71,7 +71,9 @@ func NewContact(company, person, email, phone, skypeid, country string) (*contac
 		SkypeId: skypeid,
 		Country: country,
 	}
-	validateContact(&doc)
+	if err := validateContact(&doc); err != nil {
+		return &contact{}, err
+	}
 	slugify(&doc)
 	err := config.ContactsCollection.Insert(doc)
 	if err != nil {
