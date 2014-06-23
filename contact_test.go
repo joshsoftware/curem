@@ -48,6 +48,31 @@ func TestNewContact(t *testing.T) {
 	}
 }
 
+func TestValidateNewContact(t *testing.T) {
+	_, err := NewContact(
+		"Encom Inc.",
+		"",
+		"flynn@encom.com",
+		"",
+		"",
+		"USA",
+	)
+	if err == nil {
+		t.Errorf("%s", "error shouldn't be nil when person is empty")
+	}
+	_, err = NewContact(
+		"Encom Inc.",
+		"Sam Flynn",
+		"",
+		"",
+		"",
+		"USA",
+	)
+	if err == nil {
+		t.Errorf("%s", "error shouldn't be nil when email is empty")
+	}
+}
+
 func TestGetContact(t *testing.T) {
 	fakeContact, err := NewContact(
 		"Encom Inc.",

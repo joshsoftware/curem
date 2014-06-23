@@ -1,7 +1,10 @@
 package main
 
 import (
+	"errors"
+	"math/rand"
 	"strconv"
+	"time"
 
 	"log"
 
@@ -9,14 +12,6 @@ import (
 	"github.com/joshsoftware/curem/config"
 	"labix.org/v2/mgo/bson"
 )
-
-// slugs is map with slugs pointing to their corresponding Ids.
-// We are using an in-memory map because our current requirement is
-// to cater to the order of thousands of customers.
-// If the need increases, optimize the memory by storing the map separately.
-// TODO(Hari): If this binary is deployed on more than one server, slugs won't
-// be unique. Make a new collection in DB for this purpose.
-var slugs map[string]bson.ObjectId = make(map[string]bson.ObjectId)
 
 // contact type holds the fields related to a particular contact.
 // omitempty tag will make sure the database doesn't contain content like:
@@ -50,6 +45,14 @@ type contact struct {
 // NewContact takes the fields of a contact, initializes a struct of contact type and returns
 // the pointer to that struct.
 func NewContact(company, person, email, phone, skypeid, country string) (*contact, error) {
+	if person == "" {
+		err := errors.New("person can't be empty")
+		return &contact{}, err
+	}
+	if email == "" {
+		err := errors.New("email can't be empty")
+		return &contact{}, err
+	}
 	doc := contact{
 		Id:      bson.NewObjectId(),
 		Company: company,
@@ -103,30 +106,28 @@ func (c *contact) Delete() error {
 func slugify(c *contact) {
 	base := slug.SlugAscii(c.Person)
 	temp := base
-	i := 1
+	rand.Seed(time.Now().UnixNano()) // takes the current time in nanoseconds as the seed
+	i := rand.Intn(10000)
 	for {
-		if _, ok := slugs[temp]; ok {
+		if slugExists(temp) {
 			temp = base + "-" + strconv.Itoa(i)
-			i++
+			i = rand.Intn(10000)
 		} else {
 			c.Slug = temp
-			slugs[temp] = c.Id
 			return
 		}
 
 	}
 }
 
-// cacheSlugs fetches all the records from an existing contacts
-// collection and initialize a map with all the slugs pointing to
-// their corresponding Ids.
-func cacheSlugs() {
+func slugExists(slug string) bool {
 	var c []contact
-	err := config.ContactsCollection.Find(nil).All(&c)
+	err := config.ContactsCollection.Find(bson.M{"slug": slug}).All(&c)
 	if err != nil {
 		log.Fatalf("%s", err)
 	}
-	for _, val := range c {
-		slugs[val.Slug] = val.Id
+	if len(c) == 0 {
+		return false
 	}
+	return true
 }
