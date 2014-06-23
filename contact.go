@@ -112,6 +112,9 @@ func GetAllContacts() ([]contact, error) {
 // First, fetch a contact from the database and change the necessary fields.
 // Then call the Update method on that contact object.
 func (c *contact) Update() error {
+	if err := validateContact(&doc); err != nil {
+		return err
+	}
 	c.UpdatedAt = bson.Now()
 	err := config.ContactsCollection.UpdateId(c.Id, c)
 	return err
