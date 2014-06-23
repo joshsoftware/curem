@@ -14,6 +14,8 @@ import (
 // We are using an in-memory map because our current requirement is
 // to cater to the order of thousands of customers.
 // If the need increases, optimize the memory by storing the map separately.
+// TODO(Hari): If this binary is deployed on more than one server, slugs won't
+// be unique. Make a new collection in DB for this purpose.
 var slugs map[string]bson.ObjectId = make(map[string]bson.ObjectId)
 
 // contact type holds the fields related to a particular contact.
