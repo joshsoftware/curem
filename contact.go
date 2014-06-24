@@ -98,6 +98,23 @@ func GetContact(i bson.ObjectId) (*contact, error) {
 	return &c, nil
 }
 
+func GetContactBySlug(slug string) (*contact, error) {
+	var c []contact
+	err := config.ContactsCollection.Find(bson.M{"slug": slug}).All(&c)
+	if err != nil {
+		return &contact{}, err
+	}
+
+	if len(c) == 0 {
+		return &contact{}, errors.New("no contact")
+	}
+
+	if len(c) > 1 {
+		return &contact{}, errors.New("more than 1 contact found")
+	}
+	return &c[0], nil
+}
+
 // GetAllContacts fetches all the contacts from the database.
 func GetAllContacts() ([]contact, error) {
 	var c []contact
