@@ -167,6 +167,11 @@ func patchContactHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// deleteContactHandler deletes a contact from the database.
+// URL: DELETE /contacts/{slug}
+//
+// Response:
+// HTTP/1.1 204 No Content
 func deleteContactHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	slug := vars["slug"]
@@ -182,4 +187,5 @@ func deleteContactHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	w.WriteHeader(http.StatusNoContent)
 }
