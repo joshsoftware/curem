@@ -88,7 +88,7 @@ func NewContact(company, person, email, phone, skypeid, country string) (*contac
 	return &doc, nil
 }
 
-// GetContact takes the contact Id as an argument and returns a pointer to a contact object.
+// GetContact takes the contact Id as an argument and returns a pointer to the contact object.
 func GetContact(i bson.ObjectId) (*contact, error) {
 	var c contact
 	err := config.ContactsCollection.FindId(i).One(&c)
@@ -98,6 +98,7 @@ func GetContact(i bson.ObjectId) (*contact, error) {
 	return &c, nil
 }
 
+// GetContactBySlug takes the contact slug as an argument and returns a pointer to the contact object.
 func GetContactBySlug(slug string) (*contact, error) {
 	var c []contact
 	err := config.ContactsCollection.Find(bson.M{"slug": slug}).All(&c)
