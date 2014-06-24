@@ -12,7 +12,7 @@ import (
 
 var r *mux.Router
 
-const BaseURL string = "http://localhost:3000/contacts/"
+const ContactsBaseURL string = "http://localhost:3000/contacts/"
 
 func init() {
 	r = mux.NewRouter()
@@ -97,8 +97,8 @@ func postContactsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	URI := BaseURL + n.Slug
-	w.Header().Set("Location", URI)
+	url := ContactsBaseURL + n.Slug
+	w.Header().Set("Location", url)
 	w.WriteHeader(http.StatusCreated)
 }
 
