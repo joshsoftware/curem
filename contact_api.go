@@ -82,12 +82,15 @@ func postContactsHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	_, err = NewContact(c.Company, c.Person, c.Email, c.Phone, c.SkypeId, c.Country)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusCreated)
 }
 
 // getContactHandler returns json data pertaining to a specific contact.
