@@ -88,8 +88,8 @@ func NewContact(company, person, email, phone, skypeid, country string) (*contac
 	return &doc, nil
 }
 
-// GetContact takes the contact Id as an argument and returns a pointer to the contact object.
-func GetContact(i bson.ObjectId) (*contact, error) {
+// GetContactById takes the contact Id as an argument and returns a pointer to the contact object.
+func GetContactById(i bson.ObjectId) (*contact, error) {
 	var c contact
 	err := config.ContactsCollection.FindId(i).One(&c)
 	if err != nil {
