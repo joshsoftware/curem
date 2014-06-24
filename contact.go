@@ -45,6 +45,63 @@ type contact struct {
 	UpdatedAt time.Time     `bson:"updatedAt,omitempty"  json:"updatedAt,omitempty"`
 }
 
+// incomingContact type is used for handling PATCH requests.
+// To understand why we are using pointer types for fields,
+// refer to http://blog.golang.org/json-and-go .
+// Using pointer types, we can differentiate intentional nil value fields
+// and empty fields.
+// This type is used *only* for decoding json obtained from a PATCH request.
+type incomingContact struct {
+	Id      *bson.ObjectId `json:"id"`
+	Company *string        `json:"company,omitempty"`
+	Person  *string        `json:"person,omitempty"`
+	Slug    *string        `json:"slug,omitempty"`
+	Email   *string        `json:"email,omitempty"`
+	Phone   *string        `json:"phone,omitempty"`
+	SkypeId *string        `json:"skypeid,omitempty"`
+	Country *string        `json:"country,omitempty"`
+}
+
+// copyIncomingFields copies the fields from an incomingContact into a
+// contact object.
+// Using multiple if statements provides more granularity, while allowing
+// update of only some specific fields.
+// TODO(Hari): Use reflect package instead of multiple if statements
+func (c *contact) copyIncomingFields(i *incomingContact) error {
+	if i.Id != nil {
+		if *i.Id != c.Id {
+			return errors.New("Id doesn't match")
+		}
+	}
+	if i.Slug != nil {
+		if *i.Slug != c.Slug {
+			return errors.New("Slug can't be updated")
+		}
+	}
+	if i.Company != nil {
+		c.Company = *i.Company
+	}
+	if i.Person != nil {
+		c.Person = *i.Person
+	}
+	if i.Slug != nil {
+		c.Slug = *i.Slug
+	}
+	if i.Email != nil {
+		c.Email = *i.Email
+	}
+	if i.Phone != nil {
+		c.Phone = *i.Phone
+	}
+	if i.SkypeId != nil {
+		c.SkypeId = *i.SkypeId
+	}
+	if i.Country != nil {
+		c.Country = *i.Country
+	}
+	return nil
+}
+
 func validateContact(c *contact) error {
 	if c.Person == "" {
 		err := errors.New("person can't be empty")
