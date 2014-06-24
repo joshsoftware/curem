@@ -110,6 +110,31 @@ func TestGetContact(t *testing.T) {
 	}
 }
 
+func TestGetContactBySlug(t *testing.T) {
+	c, err := NewContact(
+		"Encom Inc.",
+		"Sam Flynn",
+		"samflynn@encom.com",
+		"103-345-456",
+		"sam_flynn",
+		"USA",
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	f, err := GetContactBySlug(c.Slug)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	if *c != *f {
+		t.Errorf("expected %+v, but got %+v", *c, *f)
+	}
+	err = config.ContactsCollection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+}
+
 func TestGetAllContacts(t *testing.T) {
 	_, err := NewContact(
 		"Encom Inc.",
