@@ -17,6 +17,7 @@ func init() {
 	r.HandleFunc("/contacts", getContactsHandler).Methods("GET")
 	r.HandleFunc("/contacts", postContactsHandler).Methods("POST")
 	r.HandleFunc("/contacts/{slug}", getContactHandler).Methods("GET")
+	r.HandleFunc("/contacts/{slug}", deleteContactHandler).Methods("DELETE")
 }
 
 // getContactsHandler returns a json response containing all
@@ -124,10 +125,29 @@ func getContactHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	enc := json.NewEncoder(w)
 	if err = enc.Encode(c); err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func deleteContactHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	slug := vars["slug"]
+	c, err := GetContactBySlug(slug)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err := c.Delete()
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
