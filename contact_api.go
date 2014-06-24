@@ -17,6 +17,7 @@ func init() {
 	r.HandleFunc("/contacts", getContactsHandler).Methods("GET")
 	r.HandleFunc("/contacts", postContactsHandler).Methods("POST")
 	r.HandleFunc("/contacts/{slug}", getContactHandler).Methods("GET")
+	r.HandleFunc("/contacts/{slug}", patchContactHandler).Methods("PATCH")
 	r.HandleFunc("/contacts/{slug}", deleteContactHandler).Methods("DELETE")
 }
 
@@ -135,6 +136,37 @@ func getContactHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func patchContactHandler(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var c incomingContact
+	err := decoder.Decode(&c)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	vars := mux.Vars(r)
+	slug := vars["slug"]
+	fc, err := GetContactBySlug(slug)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = fc.copyIncomingFields(&c)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = fc.Update()
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
 func deleteContactHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	slug := vars["slug"]
@@ -144,7 +176,7 @@ func deleteContactHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err := c.Delete()
+	err = c.Delete()
 	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
