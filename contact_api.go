@@ -8,12 +8,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var r *mux.Router
+var r *mux.Router = mux.NewRouter()
 
 const ContactsBaseURL string = "http://localhost:3000/contacts/"
 
 func init() {
-	r = mux.NewRouter()
 	r.HandleFunc("/contacts", getContactsHandler).Methods("GET")
 	r.HandleFunc("/contacts", postContactsHandler).Methods("POST")
 	r.HandleFunc("/contacts/{slug}", getContactHandler).Methods("GET")
