@@ -33,7 +33,7 @@ func init() {
 //  {
 //    "id": "53a14760e3bdea4286000003",
 //    "company": "Encom Inc.",
-//    "person": "Sam Flynni !",
+//    "person": "Sam Flynn",
 //    "email": "samflynn@encom.com",
 //    "phone": "103-345-456",
 //    "skypeid": "sam_flynn",
