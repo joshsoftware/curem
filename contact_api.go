@@ -136,6 +136,15 @@ func getContactHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// patchContactHandler patches a contact in the database.
+// URL: PATCH /contacts/{slug}
+// Request:
+// {
+//   "country": "India"
+// }
+//
+// Response:
+// HTTP/1.1 200 OK
 func patchContactHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var c incomingContact
