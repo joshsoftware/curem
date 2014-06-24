@@ -6,8 +6,6 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-
-	"labix.org/v2/mgo/bson"
 )
 
 var r *mux.Router
@@ -18,7 +16,7 @@ func init() {
 	r = mux.NewRouter()
 	r.HandleFunc("/contacts", getContactsHandler).Methods("GET")
 	r.HandleFunc("/contacts", postContactsHandler).Methods("POST")
-	r.HandleFunc("/contacts/{id}", getContactHandler).Methods("GET")
+	r.HandleFunc("/contacts/{slug}", getContactHandler).Methods("GET")
 }
 
 // getContactsHandler returns a json response containing all
@@ -104,24 +102,25 @@ func postContactsHandler(w http.ResponseWriter, r *http.Request) {
 
 // getContactHandler returns json data pertaining to a specific contact.
 //
-// URL: GET /contacts/{id}
+// URL: GET /contacts/{slug}
 //
 // For example,
-// GET /contacts/53a15a07e3bdea53d0000002
+// GET /contacts/flynn
+//
 // Response:
 // {
 //   "id": "53a15a07e3bdea53d0000002",
 //   "company": "Encom Inc.",
 //   "person": "Flynn",
+//   "slug": "flynn"
 //   "email": "flynn@encom.com",
 //   "country": "USA"
 // }
 func getContactHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
-	i := vars["id"]
-	id := bson.ObjectIdHex(i)
-	c, err := GetContact(id)
+	slug := vars["slug"]
+	c, err := GetContactBySlug(slug)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
