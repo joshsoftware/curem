@@ -227,3 +227,50 @@ func TestDelete(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 }
+
+func TestSlugifyContact(t *testing.T) {
+	c, err := NewContact(
+		"Encom Inc.",
+		"Sam Flynn",
+		"samflynn@encom.com",
+		"103-345-456",
+		"sam_flynn",
+		"USA",
+	)
+	if c.Slug != "sam-flynn" {
+		t.Errorf("expected slug to be %s, but got %s", "sam-flynn", c.Slug)
+	}
+	d := &contact{
+		Person: "Sam Flynn",
+		Email:  "sam@example.com",
+	}
+	slugifyContact(d)
+	if d.Slug == "sam-flynn" {
+		t.Errorf("expected something other than %s as slug", "sam-flynn")
+	}
+	err = config.ContactsCollection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+}
+
+func TestContactSlugExists(t *testing.T) {
+	c, err := NewContact(
+		"Encom Inc.",
+		"Sam Flynn",
+		"samflynn@encom.com",
+		"103-345-456",
+		"sam_flynn",
+		"USA",
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	if !contactSlugExists(c.Slug) {
+		t.Errorf("%s", "expected contactSlugExists to return true but returns false")
+	}
+	err = config.ContactsCollection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+}
