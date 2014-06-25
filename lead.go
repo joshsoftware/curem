@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/joshsoftware/curem/config"
 	"labix.org/v2/mgo/bson"
 )
@@ -16,6 +18,8 @@ type lead struct {
 	DurationInMonths   float64       `bson:"durationinmonths,omitempty"   json:"durationinmonths,omitempty"`
 	EstimatedStartDate string        `bson:"estimatedstartdate,omitempty" json:"estimatedstartdate,omitempty"`
 	Comments           []string      `bson:"comments,omitempty"           json:"comments,omitempty"`
+	CreatedAt          time.Time     `bson:"createdAt,omitempty"          json:"createdAt,omitempty"`
+	UpdatedAt          time.Time     `bson:"updatedAt,omitempty"          json:"updatedAt,omitempty"`
 }
 
 // NewLead takes the fields of a lead, initializes a struct of lead type and returns
@@ -35,6 +39,10 @@ func NewLead(cid bson.ObjectId, source, owner, status string, teamsize, rate, du
 		EstimatedStartDate: start,
 		Comments:           comments,
 	}
+
+	doc.CreatedAt = doc.Id.Time()
+	doc.UpdatedAt = doc.CreatedAt
+
 	err := config.LeadsCollection.Insert(doc)
 	if err != nil {
 		return &lead{}, err
@@ -66,6 +74,7 @@ func GetAllLeads() ([]lead, error) {
 // First, fetch a lead from the database and change the necessary fields.
 // Then call the Update method on that lead object.
 func (l *lead) Update() error {
+	l.UpdatedAt = bson.Now()
 	err := config.LeadsCollection.UpdateId(l.Id, l)
 	return err
 }
