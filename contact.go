@@ -133,7 +133,7 @@ func NewContact(company, person, email, phone, skypeid, country string) (*contac
 	if err := validateContact(&doc); err != nil {
 		return &contact{}, err
 	}
-	slugify(&doc)
+	slugifyContact(&doc)
 
 	doc.CreatedAt = doc.Id.Time()
 	doc.UpdatedAt = doc.CreatedAt
@@ -200,13 +200,15 @@ func (c *contact) Delete() error {
 	return config.ContactsCollection.RemoveId(c.Id)
 }
 
-func slugify(c *contact) {
+// slugifyContact takes a pointer to a contact as the argument and
+// creates a slug and populates the slug field of the contact.
+func slugifyContact(c *contact) {
 	base := slug.SlugAscii(c.Person)
 	temp := base
 	rand.Seed(time.Now().UnixNano()) // takes the current time in nanoseconds as the seed
 	i := rand.Intn(10000)
 	for {
-		if slugExists(temp) {
+		if contactSlugExists(temp) {
 			temp = base + "-" + strconv.Itoa(i)
 			i = rand.Intn(10000)
 		} else {
@@ -217,11 +219,14 @@ func slugify(c *contact) {
 	}
 }
 
-func slugExists(slug string) bool {
+// contactSlugExists returns true if a slug for a contact already exists in the database
+// else returns false.
+func contactSlugExists(slug string) bool {
 	var c []contact
 	err := config.ContactsCollection.Find(bson.M{"slug": slug}).All(&c)
 	if err != nil {
-		log.Fatalf("%s", err)
+		log.Println(err)
+		return true // returns true just to be safe.
 	}
 	if len(c) == 0 {
 		return false
