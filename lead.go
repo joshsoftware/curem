@@ -13,10 +13,10 @@ type lead struct {
 	Source             string        `bson:"source,omitempty"             json:"source,omitempty"`
 	Owner              string        `bson:"owner,omitempty"              json:"owner,omitempty"`
 	Status             string        `bson:"status,omitempty"             json:"status,omitempty"`
-	TeamSize           float64       `bson:"teamsize,omitempty"           json:"teamsize,omitempty"`
-	RatePerHour        float64       `bson:"rateperhour,omitempty"        json:"rateperhour,omitempty"`
-	DurationInMonths   float64       `bson:"durationinmonths,omitempty"   json:"durationinmonths,omitempty"`
-	EstimatedStartDate string        `bson:"estimatedstartdate,omitempty" json:"estimatedstartdate,omitempty"`
+	TeamSize           float64       `bson:"teamSize,omitempty"           json:"teamSize,omitempty"`
+	RatePerHour        float64       `bson:"ratePerHour,omitempty"        json:"ratePerHour,omitempty"`
+	DurationInMonths   float64       `bson:"durationInMonths,omitempty"   json:"durationInMonths,omitempty"`
+	EstimatedStartDate string        `bson:"estimatedStartDate,omitempty" json:"estimatedStartDate,omitempty"`
 	Comments           []string      `bson:"comments,omitempty"           json:"comments,omitempty"`
 	CreatedAt          time.Time     `bson:"createdAt,omitempty"          json:"createdAt,omitempty"`
 	UpdatedAt          time.Time     `bson:"updatedAt,omitempty"          json:"updatedAt,omitempty"`
