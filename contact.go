@@ -39,7 +39,7 @@ type contact struct {
 	Slug      string        `bson:"slug,omitempty"       json:"slug,omitempty"`
 	Email     string        `bson:"email,omitempty"      json:"email,omitempty"`
 	Phone     string        `bson:"phone,omitempty"      json:"phone,omitempty"`
-	SkypeId   string        `bson:"skypeid,omitempty"    json:"skypeid,omitempty"`
+	SkypeId   string        `bson:"skypeId,omitempty"    json:"skypeId,omitempty"`
 	Country   string        `bson:"country,omitempty"    json:"country,omitempty"`
 	CreatedAt time.Time     `bson:"createdAt,omitempty"  json:"createdAt,omitempty"`
 	UpdatedAt time.Time     `bson:"updatedAt,omitempty"  json:"updatedAt,omitempty"`
@@ -58,7 +58,7 @@ type incomingContact struct {
 	Slug    *string        `json:"slug,omitempty"`
 	Email   *string        `json:"email,omitempty"`
 	Phone   *string        `json:"phone,omitempty"`
-	SkypeId *string        `json:"skypeid,omitempty"`
+	SkypeId *string        `json:"skypeId,omitempty"`
 	Country *string        `json:"country,omitempty"`
 }
 
