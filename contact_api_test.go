@@ -116,6 +116,58 @@ func TestGetContactHandler(t *testing.T) {
 	}
 }
 
+func TestPatchContactHandler(t *testing.T) {
+	ts := httptest.NewServer(r)
+	defer ts.Close()
+	c, err := NewContact(
+		"Encom Inc.",
+		"Flynn",
+		"flynn@encom.com",
+		"",
+		"",
+		"USA",
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	var b bytes.Buffer
+	b.Write([]byte(`{"person":"Hari haran","email":"hari@example.com","country":""}`))
+	req, err := http.NewRequest("PATCH", ts.URL+"/contacts/"+c.Slug, &b)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode == 200 {
+		x, err := GetAllContacts()
+		if err != nil {
+			t.Errorf("%s", err)
+		}
+		if len(x) == 1 {
+			if x[0].Person != "Hari haran" {
+				t.Errorf("expected person to be Hari haran, but got %s", x[0].Person)
+			}
+			if x[0].Email != "hari@example.com" {
+				t.Errorf("expected email to be hari@example.com, but got %s", x[0].Email)
+			}
+			if x[0].Country != "" {
+				t.Errorf(`expected country to be "", but got %s`, x[0].Country)
+			}
+		} else {
+			t.Errorf("expected 1 contact, but got %d contacts", len(x))
+		}
+		err = config.ContactsCollection.DropCollection()
+		if err != nil {
+			t.Errorf("%s", err)
+		}
+	} else {
+		t.Errorf("expected response code to be 200, but got %d", resp.StatusCode)
+	}
+}
+
 func TestDeleteContactHandler(t *testing.T) {
 	ts := httptest.NewServer(r)
 	defer ts.Close()
