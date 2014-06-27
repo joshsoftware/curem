@@ -13,6 +13,7 @@ import (
 
 func TestGetContactsHandler(t *testing.T) {
 	ts := httptest.NewServer(r)
+	defer ts.Close()
 	c, err := NewContact(
 		"Encom Inc.",
 		"Flynn",
