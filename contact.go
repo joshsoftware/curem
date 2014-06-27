@@ -102,7 +102,7 @@ func (c *contact) copyIncomingFields(i *incomingContact) error {
 	return nil
 }
 
-func validateContact(c *contact) error {
+func (c *contact) Validate() error {
 	if c.Person == "" {
 		err := errors.New("person can't be empty")
 		return err
@@ -130,7 +130,7 @@ func NewContact(company, person, email, phone, skypeid, country string) (*contac
 		SkypeId: skypeid,
 		Country: country,
 	}
-	if err := validateContact(&doc); err != nil {
+	if err := (&doc).Validate(); err != nil {
 		return &contact{}, err
 	}
 	slugifyContact(&doc)
@@ -187,7 +187,7 @@ func GetAllContacts() ([]contact, error) {
 // First, fetch a contact from the database and change the necessary fields.
 // Then call the Update method on that contact object.
 func (c *contact) Update() error {
-	if err := validateContact(c); err != nil {
+	if err := c.Validate(); err != nil {
 		return err
 	}
 	c.UpdatedAt = bson.Now()
