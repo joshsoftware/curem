@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -43,6 +44,41 @@ func TestGetContactsHandler(t *testing.T) {
 	err = config.ContactsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
+	}
+}
+
+func TestPostContactsHandler(t *testing.T) {
+	ts := httptest.NewServer(r)
+	defer ts.Close()
+	var b bytes.Buffer
+	b.Write([]byte(`{"person":"Hari haran","email":"hari@example.com"}`))
+	resp, err := http.Post(ts.URL+"/contacts", "encoding/json", &b)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode == 201 {
+		x, err := GetAllContacts()
+		if err != nil {
+			t.Errorf("%s", err)
+		}
+		if len(x) == 1 {
+			if x[0].Person != "Hari haran" {
+				t.Errorf("expected person to be Hari haran, but got %s", x[0].Person)
+			}
+			if x[0].Email != "hari@example.com" {
+				t.Errorf("expected email to be hari@example.com, but got %s", x[0].Email)
+			}
+		} else {
+			t.Errorf("expected 1 contact, but got %d contacts", len(x))
+		}
+		err = config.ContactsCollection.DropCollection()
+		if err != nil {
+			t.Errorf("%s", err)
+		}
+
+	} else {
+		t.Errorf("expected response code to be 201 but got %d", resp.StatusCode)
 	}
 }
 
