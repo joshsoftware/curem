@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/joshsoftware/curem/config"
@@ -28,14 +27,11 @@ func TestNewLead(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 
-	fmt.Printf("%+v\n", fakeLead)
-
 	var refContact contact
 	err = config.ContactsCollection.FindId(fakeLead.ContactId).One(&refContact)
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	fmt.Printf("%+v\n", refContact)
 
 	err = config.LeadsCollection.DropCollection()
 	if err != nil {
