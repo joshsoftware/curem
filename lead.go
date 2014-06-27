@@ -100,6 +100,19 @@ func NewLead(cid bson.ObjectId, source, owner, status string, teamsize, rate, du
 	return &doc, nil
 }
 
+func (l *lead) Validate() error {
+	if l.Source == "" {
+		return errors.New("Source can't be empty")
+	}
+	if l.Owner == "" {
+		return errors.New("Owner can't be empty")
+	}
+	if l.Status == "" {
+		return errors.New("Status can't be empty")
+	}
+	return nil
+}
+
 // GetLead takes the lead Id as an argument and returns a pointer to a lead object.
 func GetLead(i bson.ObjectId) (*lead, error) {
 	var l lead
