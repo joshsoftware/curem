@@ -45,3 +45,37 @@ func TestGetContactsHandler(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 }
+
+func TestGetContactHandler(t *testing.T) {
+	ts := httptest.NewServer(r)
+	defer ts.Close()
+	c, err := NewContact(
+		"Encom Inc.",
+		"Flynn",
+		"flynn@encom.com",
+		"",
+		"",
+		"USA",
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	y, err := json.Marshal(c)
+	resp, err := http.Get(ts.URL + "/contacts/" + c.Slug)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	bodystring := strings.TrimSpace(string(body))
+	if bodystring != string(y) {
+		t.Errorf("expected %s, but got %s", string(y), bodystring)
+	}
+	err = config.ContactsCollection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+}
