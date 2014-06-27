@@ -115,3 +115,42 @@ func TestGetContactHandler(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 }
+
+func TestDeleteContactHandler(t *testing.T) {
+	ts := httptest.NewServer(r)
+	defer ts.Close()
+	c, err := NewContact(
+		"Encom Inc.",
+		"Flynn",
+		"flynn@encom.com",
+		"",
+		"",
+		"USA",
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	req, err := http.NewRequest("DELETE", ts.URL+"/contacts/"+c.Slug, nil)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 204 {
+		t.Errorf("expected response status code to be 204, but got %d", resp.StatusCode)
+	}
+	x, err := GetAllContacts()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	if len(x) != 0 {
+		t.Errorf("expected 0 contacts after delete, but got %d", len(x))
+	}
+	err = config.ContactsCollection.DropCollection()
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+}
