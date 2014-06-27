@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"time"
 
 	"github.com/joshsoftware/curem/config"
@@ -20,6 +21,55 @@ type lead struct {
 	Comments           []string      `bson:"comments,omitempty"           json:"comments,omitempty"`
 	CreatedAt          time.Time     `bson:"createdAt,omitempty"          json:"createdAt,omitempty"`
 	UpdatedAt          time.Time     `bson:"updatedAt,omitempty"          json:"updatedAt,omitempty"`
+}
+
+type incomingLead struct {
+	Id                 *bson.ObjectId `json:"id"`
+	ContactId          *bson.ObjectId `json:"contactId,omitempty"`
+	Source             *string        `json:"source,omitempty"`
+	Owner              *string        `json:"owner,omitempty"`
+	Status             *string        `json:"status,omitempty"`
+	TeamSize           *float64       `json:"teamSize,omitempty"`
+	RatePerHour        *float64       `json:"ratePerHour,omitempty"`
+	DurationInMonths   *float64       `json:"durationInMonths,omitempty"`
+	EstimatedStartDate *string        `json:"estimatedStartDate,omitempty"`
+	Comments           *[]string      `json:"comments,omitempty"`
+}
+
+func (l *lead) copyIncomingFields(i *incomingLead) error {
+	if i.Id != nil {
+		if *i.Id != l.Id {
+			return errors.New("Id doesn't match")
+		}
+	}
+	if i.ContactId != nil {
+		l.Id = *i.Id
+	}
+	if i.Source != nil {
+		l.Source = *i.Source
+	}
+	if i.Owner != nil {
+		l.Owner = *i.Owner
+	}
+	if i.Status != nil {
+		l.Status = *i.Status
+	}
+	if i.TeamSize != nil {
+		l.TeamSize = *i.TeamSize
+	}
+	if i.RatePerHour != nil {
+		l.RatePerHour = *i.RatePerHour
+	}
+	if i.DurationInMonths != nil {
+		l.DurationInMonths = *i.DurationInMonths
+	}
+	if i.EstimatedStartDate != nil {
+		l.EstimatedStartDate = *i.EstimatedStartDate
+	}
+	if i.Comments != nil {
+		l.Comments = *i.Comments
+	}
+	return nil
 }
 
 // NewLead takes the fields of a lead, initializes a struct of lead type and returns
