@@ -9,8 +9,11 @@ import (
 	"labix.org/v2/mgo/bson"
 )
 
+const LeadsBaseURL string = "http://localhost:3000/leads/"
+
 func init() {
 	r.HandleFunc("/leads", getLeadsHandler).Methods("GET")
+	r.HandleFunc("/leads", postLeadHandler).Methods("POST")
 	r.HandleFunc("/leads/{id}", getLeadHandler).Methods("GET")
 	r.HandleFunc("/leads/{id}", patchLeadHandler).Methods("PATCH")
 }
@@ -27,6 +30,27 @@ func getLeadsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func postLeadHandler(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var l lead
+	err := decoder.Decode(&l)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	n, err := NewLead(l.ContactId, l.Source, l.Owner, l.Status, l.TeamSize, l.RatePerHour,
+		l.DurationInMonths, l.EstimatedStartDate, l.Comments)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	url := LeadsBaseURL + n.Id.Hex()
+	w.Header().Set("Location", url)
+	w.WriteHeader(http.StatusCreated)
 }
 
 func getLeadHandler(w http.ResponseWriter, r *http.Request) {
