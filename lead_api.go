@@ -65,11 +65,13 @@ func getLeadHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	enc := json.NewEncoder(w)
 	if err = enc.Encode(c); err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -112,6 +114,7 @@ func deleteLeadHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	err = c.Delete()
 	if err != nil {
