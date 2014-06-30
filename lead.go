@@ -72,6 +72,19 @@ func (l *lead) copyIncomingFields(i *incomingLead) error {
 	return nil
 }
 
+func (l *lead) Validate() error {
+	if l.Source == "" {
+		return errors.New("Source can't be empty")
+	}
+	if l.Owner == "" {
+		return errors.New("Owner can't be empty")
+	}
+	if l.Status == "" {
+		return errors.New("Status can't be empty")
+	}
+	return nil
+}
+
 // NewLead takes the fields of a lead, initializes a struct of lead type and returns
 // the pointer to that struct.
 // Also, It inserts the lead object into the database.
@@ -90,6 +103,10 @@ func NewLead(cid bson.ObjectId, source, owner, status string, teamsize, rate, du
 		Comments:           comments,
 	}
 
+	if err := (&doc).Validate(); err != nil {
+		return &lead{}, err
+	}
+
 	doc.CreatedAt = doc.Id.Time()
 	doc.UpdatedAt = doc.CreatedAt
 
@@ -98,19 +115,6 @@ func NewLead(cid bson.ObjectId, source, owner, status string, teamsize, rate, du
 		return &lead{}, err
 	}
 	return &doc, nil
-}
-
-func (l *lead) Validate() error {
-	if l.Source == "" {
-		return errors.New("Source can't be empty")
-	}
-	if l.Owner == "" {
-		return errors.New("Owner can't be empty")
-	}
-	if l.Status == "" {
-		return errors.New("Status can't be empty")
-	}
-	return nil
 }
 
 // GetLead takes the lead Id as an argument and returns a pointer to a lead object.
@@ -137,6 +141,9 @@ func GetAllLeads() ([]lead, error) {
 // First, fetch a lead from the database and change the necessary fields.
 // Then call the Update method on that lead object.
 func (l *lead) Update() error {
+	if err := l.Validate(); err != nil {
+		return err
+	}
 	l.UpdatedAt = bson.Now()
 	err := config.LeadsCollection.UpdateId(l.Id, l)
 	return err
