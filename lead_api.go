@@ -16,6 +16,7 @@ func init() {
 	r.HandleFunc("/leads", postLeadHandler).Methods("POST")
 	r.HandleFunc("/leads/{id}", getLeadHandler).Methods("GET")
 	r.HandleFunc("/leads/{id}", patchLeadHandler).Methods("PATCH")
+	r.HandleFunc("/leads/{id}", deleteLeadHandler).Methods("DELETE")
 }
 
 func getLeadsHandler(w http.ResponseWriter, r *http.Request) {
@@ -101,4 +102,22 @@ func patchLeadHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func deleteLeadHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	i := vars["id"]
+	id := bson.ObjectIdHex(i)
+	c, err := GetLead(id)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	err = c.Delete()
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }
