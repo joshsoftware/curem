@@ -16,7 +16,7 @@ func init() {
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()["q"][0]
-	var c interface{}
+	var c map[string]interface{}
 	dbquery := bson.D{
 		{"text", config.ContactsCollectionName},
 		{"search", q},
@@ -27,7 +27,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	enc := json.NewEncoder(w)
-	if err = enc.Encode(c); err != nil {
+	if err = enc.Encode(c["results"]); err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
