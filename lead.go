@@ -2,11 +2,14 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/joshsoftware/curem/config"
 	"labix.org/v2/mgo/bson"
 )
+
+var statusOptions = []string{"Won", "Lost", "Warming Up", "Cooling Down", "Tech", "Negotiating", "Proposal", "Contract"}
 
 type lead struct {
 	Id                 bson.ObjectId `bson:"_id"                          json:"id"`
@@ -82,7 +85,19 @@ func (l *lead) Validate() error {
 	if l.Status == "" {
 		return errors.New("Status can't be empty")
 	}
+	if !isStatusValid(l.Status) {
+		return fmt.Errorf("Status is invalid. Can only be one of %s", statusOptions)
+	}
 	return nil
+}
+
+func isStatusValid(s string) bool {
+	for _, v := range statusOptions {
+		if v == s {
+			return true
+		}
+	}
+	return false
 }
 
 // NewLead takes the fields of a lead, initializes a struct of lead type and returns
