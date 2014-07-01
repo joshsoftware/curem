@@ -7,13 +7,25 @@ import (
 )
 
 var (
-	Session                *mgo.Session
-	Db                     *mgo.Database
-	LeadsCollection        *mgo.Collection
-	ContactsCollection     *mgo.Collection
+	// Session is the configured MongoDB Session
+	Session *mgo.Session
+
+	// Db is the configured database
+	Db *mgo.Database
+
+	// LeadsCollection is the collection storing leads
+	LeadsCollection *mgo.Collection
+
+	// ContactsCollection is the collection storing contacts
+	ContactsCollection *mgo.Collection
+
+	// ContactsCollectionName is the name of the collection containing contacts.
+	// It is required for forming the DB Query while performing text search.
 	ContactsCollectionName string
 )
 
+// Configure configures the options, sets up the database,
+// initializes exported session, database and collection variables.
 func Configure(options map[string]string) {
 	if options["name"] == "" {
 		log.Fatalf("Configure requires the name of the MongoDB server")
