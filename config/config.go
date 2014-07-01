@@ -7,10 +7,11 @@ import (
 )
 
 var (
-	Session            *mgo.Session
-	Db                 *mgo.Database
-	LeadsCollection    *mgo.Collection
-	ContactsCollection *mgo.Collection
+	Session                *mgo.Session
+	Db                     *mgo.Database
+	LeadsCollection        *mgo.Collection
+	ContactsCollection     *mgo.Collection
+	ContactsCollectionName string
 )
 
 func Configure(options map[string]string) {
@@ -45,5 +46,12 @@ func Configure(options map[string]string) {
 	Db = session.DB(options["name"])
 	LeadsCollection = Db.C(options["leads"])
 	ContactsCollection = Db.C(options["contacts"])
-
+	ContactsCollectionName = options["contacts"]
+	index := mgo.Index{
+		Key: []string{"$text:person"},
+	}
+	err = ContactsCollection.EnsureIndex(index)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
