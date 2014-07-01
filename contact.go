@@ -33,13 +33,13 @@ import (
 //    Person: Xyz
 //   }
 type contact struct {
-	Id        bson.ObjectId `bson:"_id"                  json:"id"`
+	ID        bson.ObjectId `bson:"_id"                  json:"id"`
 	Company   string        `bson:"company,omitempty"    json:"company,omitempty"`
 	Person    string        `bson:"person,omitempty"     json:"person,omitempty"`
 	Slug      string        `bson:"slug,omitempty"       json:"slug,omitempty"`
 	Email     string        `bson:"email,omitempty"      json:"email,omitempty"`
 	Phone     string        `bson:"phone,omitempty"      json:"phone,omitempty"`
-	SkypeId   string        `bson:"skypeId,omitempty"    json:"skypeId,omitempty"`
+	SkypeID   string        `bson:"skypeID,omitempty"    json:"skypeID,omitempty"`
 	Country   string        `bson:"country,omitempty"    json:"country,omitempty"`
 	CreatedAt time.Time     `bson:"createdAt,omitempty"  json:"createdAt,omitempty"`
 	UpdatedAt time.Time     `bson:"updatedAt,omitempty"  json:"updatedAt,omitempty"`
@@ -52,13 +52,13 @@ type contact struct {
 // and empty fields.
 // This type is used *only* for decoding json obtained from a PATCH request.
 type incomingContact struct {
-	Id      *bson.ObjectId `json:"id"`
+	ID      *bson.ObjectId `json:"id"`
 	Company *string        `json:"company,omitempty"`
 	Person  *string        `json:"person,omitempty"`
 	Slug    *string        `json:"slug,omitempty"`
 	Email   *string        `json:"email,omitempty"`
 	Phone   *string        `json:"phone,omitempty"`
-	SkypeId *string        `json:"skypeId,omitempty"`
+	SkypeID *string        `json:"skypeID,omitempty"`
 	Country *string        `json:"country,omitempty"`
 }
 
@@ -68,14 +68,14 @@ type incomingContact struct {
 // update of only some specific fields.
 // TODO(Hari): Use reflect package instead of multiple if statements
 func (c *contact) copyIncomingFields(i *incomingContact) error {
-	if i.Id != nil {
-		if *i.Id != c.Id {
-			return errors.New("Id doesn't match")
+	if i.ID != nil {
+		if *i.ID != c.ID {
+			return errors.New("id doesn't match")
 		}
 	}
 	if i.Slug != nil {
 		if *i.Slug != c.Slug {
-			return errors.New("Slug can't be updated")
+			return errors.New("slug can't be updated")
 		}
 	}
 	if i.Company != nil {
@@ -93,8 +93,8 @@ func (c *contact) copyIncomingFields(i *incomingContact) error {
 	if i.Phone != nil {
 		c.Phone = *i.Phone
 	}
-	if i.SkypeId != nil {
-		c.SkypeId = *i.SkypeId
+	if i.SkypeID != nil {
+		c.SkypeID = *i.SkypeID
 	}
 	if i.Country != nil {
 		c.Country = *i.Country
@@ -122,20 +122,21 @@ func (c *contact) Validate() error {
 // the pointer to that struct.
 func NewContact(company, person, email, phone, skypeid, country string) (*contact, error) {
 	doc := contact{
-		Id:      bson.NewObjectId(),
+		ID:      bson.NewObjectId(),
 		Company: company,
 		Person:  person,
 		Email:   email,
 		Phone:   phone,
-		SkypeId: skypeid,
+		SkypeID: skypeid,
 		Country: country,
 	}
+
 	if err := (&doc).Validate(); err != nil {
 		return &contact{}, err
 	}
 	slugifyContact(&doc)
 
-	doc.CreatedAt = doc.Id.Time()
+	doc.CreatedAt = doc.ID.Time()
 	doc.UpdatedAt = doc.CreatedAt
 
 	err := config.ContactsCollection.Insert(doc)
@@ -145,8 +146,8 @@ func NewContact(company, person, email, phone, skypeid, country string) (*contac
 	return &doc, nil
 }
 
-// GetContactById takes the contact Id as an argument and returns a pointer to the contact object.
-func GetContactById(i bson.ObjectId) (*contact, error) {
+// GetContactByID takes the contact ID as an argument and returns a pointer to the contact object.
+func GetContactByID(i bson.ObjectId) (*contact, error) {
 	var c contact
 	err := config.ContactsCollection.FindId(i).One(&c)
 	if err != nil {
@@ -191,13 +192,13 @@ func (c *contact) Update() error {
 		return err
 	}
 	c.UpdatedAt = bson.Now()
-	err := config.ContactsCollection.UpdateId(c.Id, c)
+	err := config.ContactsCollection.UpdateId(c.ID, c)
 	return err
 }
 
 // Delete deletes the contact from the database.
 func (c *contact) Delete() error {
-	return config.ContactsCollection.RemoveId(c.Id)
+	return config.ContactsCollection.RemoveId(c.ID)
 }
 
 // slugifyContact takes a pointer to a contact as the argument and

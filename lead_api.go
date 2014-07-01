@@ -9,6 +9,7 @@ import (
 	"labix.org/v2/mgo/bson"
 )
 
+// LeadsBaseURL is the base URL for the location of a lead resource.
 const LeadsBaseURL string = "http://localhost:3000/leads/"
 
 func init() {
@@ -44,14 +45,14 @@ func postLeadHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	n, err := NewLead(l.ContactId, l.Source, l.Owner, l.Status, l.TeamSize, l.RatePerHour,
+	n, err := NewLead(l.ContactID, l.Source, l.Owner, l.Status, l.TeamSize, l.RatePerHour,
 		l.DurationInMonths, l.EstimatedStartDate, l.Comments)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	url := LeadsBaseURL + n.Id.Hex()
+	url := LeadsBaseURL + n.ID.Hex()
 	w.Header().Set("Location", url)
 	w.WriteHeader(http.StatusCreated)
 }

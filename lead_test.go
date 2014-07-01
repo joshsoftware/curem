@@ -11,7 +11,7 @@ import (
 )
 
 func TestNewLead(t *testing.T) {
-	f := fakeContactId()
+	f := fakeContactID()
 	fakeLead, err := NewLead(
 		f,
 		"Web",
@@ -28,7 +28,7 @@ func TestNewLead(t *testing.T) {
 	}
 
 	var refContact contact
-	err = config.ContactsCollection.FindId(fakeLead.ContactId).One(&refContact)
+	err = config.ContactsCollection.FindId(fakeLead.ContactID).One(&refContact)
 	if err != nil {
 		t.Errorf("%s", err)
 	}
@@ -38,14 +38,14 @@ func TestNewLead(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 
-	// Drop collection created by fakeContactId()
+	// Drop collection created by fakeContactID()
 	err = config.ContactsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
 }
 
-func fakeContactId() bson.ObjectId {
+func fakeContactID() bson.ObjectId {
 	fakeContact, err := NewContact(
 		"Encom Inc.",
 		"Flynn",
@@ -57,11 +57,11 @@ func fakeContactId() bson.ObjectId {
 	if err != nil {
 		log.Println(err)
 	}
-	return fakeContact.Id
+	return fakeContact.ID
 }
 
 func TestGetLead(t *testing.T) {
-	f := fakeContactId()
+	f := fakeContactID()
 	fakeLead, err := NewLead(
 		f,
 		"Web",
@@ -76,19 +76,19 @@ func TestGetLead(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	id := fakeLead.Id
+	id := fakeLead.ID
 	fetchedLead, err := GetLead(id)
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	if fetchedLead.Id != fakeLead.Id {
-		t.Errorf("Expected id of %v, but got %v", fakeLead.Id, fetchedLead.Id)
+	if fetchedLead.ID != fakeLead.ID {
+		t.Errorf("Expected id of %v, but got %v", fakeLead.ID, fetchedLead.ID)
 	}
 	err = config.LeadsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	// Drop collection created by fakeContactId()
+	// Drop collection created by fakeContactID()
 	err = config.ContactsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
@@ -96,7 +96,7 @@ func TestGetLead(t *testing.T) {
 }
 
 func TestGetAllLeads(t *testing.T) {
-	f := fakeContactId()
+	f := fakeContactID()
 	_, err := NewLead(
 		f,
 		"Web",
@@ -111,7 +111,7 @@ func TestGetAllLeads(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	f = fakeContactId()
+	f = fakeContactID()
 	_, err = NewLead(
 		f,
 		"Referral",
@@ -144,7 +144,7 @@ func TestGetAllLeads(t *testing.T) {
 }
 
 func TestUpdateLead(t *testing.T) {
-	f := fakeContactId()
+	f := fakeContactID()
 	fakeLead, err := NewLead(
 		f,
 		"Web",
@@ -164,7 +164,7 @@ func TestUpdateLead(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	fetchedLead, err := GetLead(fakeLead.Id)
+	fetchedLead, err := GetLead(fakeLead.ID)
 	if err != nil {
 		t.Errorf("%s", err)
 	}
@@ -182,7 +182,7 @@ func TestUpdateLead(t *testing.T) {
 }
 
 func TestDeleteLead(t *testing.T) {
-	f := fakeContactId()
+	f := fakeContactID()
 	fakeLead, err := NewLead(
 		f,
 		"Web",

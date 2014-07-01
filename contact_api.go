@@ -8,8 +8,9 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var r *mux.Router = mux.NewRouter()
+var r = mux.NewRouter()
 
+// ContactsBaseURL is the base URL for the location of a contact resource.
 const ContactsBaseURL string = "http://localhost:3000/contacts/"
 
 func init() {
@@ -90,7 +91,7 @@ func postContactsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	n, err := NewContact(c.Company, c.Person, c.Email, c.Phone, c.SkypeId, c.Country)
+	n, err := NewContact(c.Company, c.Person, c.Email, c.Phone, c.SkypeID, c.Country)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)

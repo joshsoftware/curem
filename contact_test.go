@@ -50,7 +50,7 @@ func TestNewContact(t *testing.T) {
 
 func TestValidateNewContact(t *testing.T) {
 	_, err := NewContact(
-		"Encom Inc.",
+		"Encom Ic.",
 		"",
 		"flynn@encom.com",
 		"",
@@ -84,7 +84,7 @@ func TestValidateNewContact(t *testing.T) {
 	}
 }
 
-func TestGetContactById(t *testing.T) {
+func TestGetContactByID(t *testing.T) {
 	fakeContact, err := NewContact(
 		"Encom Inc.",
 		"Flynn",
@@ -96,8 +96,8 @@ func TestGetContactById(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	id := fakeContact.Id
-	fetchedContact, err := GetContactById(id)
+	id := fakeContact.ID
+	fetchedContact, err := GetContactByID(id)
 	if err != nil {
 		t.Errorf("%s", err)
 	}
@@ -186,7 +186,7 @@ func TestUpdateContact(t *testing.T) {
 	}
 	fakeContact.Country = "India"
 	fakeContact.Update()
-	fetchedContact, err := GetContactById(fakeContact.Id)
+	fetchedContact, err := GetContactByID(fakeContact.ID)
 	if err != nil {
 		t.Errorf("%s", err)
 	}

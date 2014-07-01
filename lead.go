@@ -13,8 +13,8 @@ import (
 var statusOptions = []string{"Won", "Lost", "Warming Up", "Cooling Down", "Tech", "Negotiating", "Proposal", "Contract"}
 
 type lead struct {
-	Id                 bson.ObjectId `bson:"_id"                          json:"id"`
-	ContactId          bson.ObjectId `bson:"contactId,omitempty"          json:"contactId,omitempty"`
+	ID                 bson.ObjectId `bson:"_id"                          json:"id"`
+	ContactID          bson.ObjectId `bson:"contactID,omitempty"          json:"contactID,omitempty"`
 	Source             string        `bson:"source,omitempty"             json:"source,omitempty"`
 	Owner              string        `bson:"owner,omitempty"              json:"owner,omitempty"`
 	Status             string        `bson:"status,omitempty"             json:"status,omitempty"`
@@ -28,8 +28,8 @@ type lead struct {
 }
 
 type incomingLead struct {
-	Id                 *bson.ObjectId `json:"id"`
-	ContactId          *bson.ObjectId `json:"contactId,omitempty"`
+	ID                 *bson.ObjectId `json:"id"`
+	ContactID          *bson.ObjectId `json:"contactID,omitempty"`
 	Source             *string        `json:"source,omitempty"`
 	Owner              *string        `json:"owner,omitempty"`
 	Status             *string        `json:"status,omitempty"`
@@ -41,13 +41,13 @@ type incomingLead struct {
 }
 
 func (l *lead) copyIncomingFields(i *incomingLead) error {
-	if i.Id != nil {
-		if *i.Id != l.Id {
-			return errors.New("Id doesn't match")
+	if i.ID != nil {
+		if *i.ID != l.ID {
+			return errors.New("id doesn't match")
 		}
 	}
-	if i.ContactId != nil {
-		l.Id = *i.Id
+	if i.ContactID != nil {
+		l.ID = *i.ID
 	}
 	if i.Source != nil {
 		l.Source = *i.Source
@@ -78,16 +78,16 @@ func (l *lead) copyIncomingFields(i *incomingLead) error {
 
 func (l *lead) Validate() error {
 	if l.Source == "" {
-		return errors.New("Source can't be empty")
+		return errors.New("source can't be empty")
 	}
 	if l.Owner == "" {
-		return errors.New("Owner can't be empty")
+		return errors.New("owner can't be empty")
 	}
 	if l.Status == "" {
-		return errors.New("Status can't be empty")
+		return errors.New("status can't be empty")
 	}
 	if !isStatusValid(l.Status) {
-		return fmt.Errorf("Status is invalid. Can only be one of %s", statusOptions)
+		return fmt.Errorf("status is invalid. Can only be one of %s", statusOptions)
 	}
 	return nil
 }
@@ -107,8 +107,8 @@ func isStatusValid(s string) bool {
 func NewLead(cid bson.ObjectId, source, owner, status string, teamsize, rate, duration float64,
 	start string, comments []string) (*lead, error) {
 	doc := lead{
-		Id:                 bson.NewObjectId(),
-		ContactId:          cid,
+		ID:                 bson.NewObjectId(),
+		ContactID:          cid,
 		Source:             strings.Title(source),
 		Owner:              strings.Title(owner),
 		Status:             strings.Title(status),
@@ -123,7 +123,7 @@ func NewLead(cid bson.ObjectId, source, owner, status string, teamsize, rate, du
 		return &lead{}, err
 	}
 
-	doc.CreatedAt = doc.Id.Time()
+	doc.CreatedAt = doc.ID.Time()
 	doc.UpdatedAt = doc.CreatedAt
 
 	err := config.LeadsCollection.Insert(doc)
@@ -133,7 +133,7 @@ func NewLead(cid bson.ObjectId, source, owner, status string, teamsize, rate, du
 	return &doc, nil
 }
 
-// GetLead takes the lead Id as an argument and returns a pointer to a lead object.
+// GetLead takes the lead ID as an argument and returns a pointer to a lead object.
 func GetLead(i bson.ObjectId) (*lead, error) {
 	var l lead
 	err := config.LeadsCollection.FindId(i).One(&l)
@@ -161,11 +161,11 @@ func (l *lead) Update() error {
 		return err
 	}
 	l.UpdatedAt = bson.Now()
-	err := config.LeadsCollection.UpdateId(l.Id, l)
+	err := config.LeadsCollection.UpdateId(l.ID, l)
 	return err
 }
 
 // Delete deletes the lead from the database.
 func (l *lead) Delete() error {
-	return config.LeadsCollection.RemoveId(l.Id)
+	return config.LeadsCollection.RemoveId(l.ID)
 }
