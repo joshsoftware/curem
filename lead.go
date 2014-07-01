@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/joshsoftware/curem/config"
@@ -108,9 +109,9 @@ func NewLead(cid bson.ObjectId, source, owner, status string, teamsize, rate, du
 	doc := lead{
 		Id:                 bson.NewObjectId(),
 		ContactId:          cid,
-		Source:             source,
-		Owner:              owner,
-		Status:             status,
+		Source:             strings.Title(source),
+		Owner:              strings.Title(owner),
+		Status:             strings.Title(status),
 		TeamSize:           teamsize,
 		RatePerHour:        rate,
 		DurationInMonths:   duration,
