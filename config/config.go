@@ -2,6 +2,7 @@ package config
 
 import (
 	"log"
+	"time"
 
 	"labix.org/v2/mgo"
 )
@@ -40,7 +41,8 @@ func Configure(options map[string]string) {
 		log.Fatalf("Configure requires the name of the contacts collection")
 	}
 
-	session, err := mgo.Dial(options["url"])
+	maxWait := time.Duration(5 * time.Second)
+	session, err := mgo.DialWithTimeout(options["url"], maxWait)
 	if err != nil {
 		panic(err)
 	}
