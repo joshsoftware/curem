@@ -23,12 +23,15 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	err := config.Db.Run(dbquery, &c)
 	if err != nil {
-		log.Fatalf("%s", err)
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	enc := json.NewEncoder(w)
 	if err = enc.Encode(c["results"]); err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
