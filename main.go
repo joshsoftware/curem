@@ -1,8 +1,7 @@
 package main
 
 import (
-	"net/http"
-
+	"github.com/codegangsta/negroni"
 	"github.com/joshsoftware/curem/config"
 )
 
@@ -17,5 +16,8 @@ func main() {
 	config.Configure(c)
 
 	// r is a *mux.Router defined in contact_api.go
-	http.ListenAndServe(":3000", r)
+
+	n := negroni.Classic()
+	n.UseHandler(r)
+	n.Run(":3000")
 }
