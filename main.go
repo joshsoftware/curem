@@ -15,9 +15,8 @@ func main() {
 
 	config.Configure(c)
 
-	// r is a *mux.Router defined in contact_api.go
-
 	n := negroni.Classic()
-	n.UseHandler(r)
+
+	n.UseHandler(r) // r is a *mux.Router defined in contact_api.go
 	n.Run(":3000")
 }
