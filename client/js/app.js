@@ -9,7 +9,11 @@ curemApp.config(['$routeProvider',
 	  }).
 	  when('/contacts/:slug', {
 	      templateUrl: 'partials/contact-detail.html',
-	      controller: 'contactsDetailController'
+	      controller: 'contactDetailController'
+	  }).
+	  when('/new/contact', {
+	      templateUrl: 'partials/new-contact.html',
+	      controller: 'newContactController'
 	  }).
 	  otherwise ({
 	      redirectTo: '/contacts'

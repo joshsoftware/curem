@@ -18,8 +18,20 @@ curemControllers.controller('contactsController', ['$scope', 'contactFactory', f
     console.log($scope.contacts)
 }]);
 
-curemControllers.controller('contactsDetailController', ['$scope', '$routeParams', function ($scope, $routeParams) {
+curemControllers.controller('contactDetailController', ['$scope','$routeParams','contactFactory', function ($scope, $routeParams, contactFactory) {
     $scope.slug = $routeParams.slug;
+
+    contactFactory.get({slug:$routeParams.slug})
+    .$promise.then(function(contact) {
+	$scope.contact = contact
+    });
+
+}]);
+
+/*
+  Stub for newContactController
+*/
+curemControllers.controller('newContactController',['$scope', function($scope) {
 }]);
 
 curemControllers.factory('leadFactory', ['$resource', function($resource) {
