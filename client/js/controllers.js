@@ -28,10 +28,11 @@ curemControllers.controller('contactDetailController', ['$scope','$routeParams',
 
 }]);
 
-/*
-  Stub for newContactController
-*/
-curemControllers.controller('newContactController',['$scope', function($scope) {
+curemControllers.controller('newContactController',['$scope','$location','contactFactory', function($scope, $location, contactFactory) {
+    $scope.createNewContact = function() {
+	contactFactory.save($scope.contact);
+	$location.path('/');
+    };
 }]);
 
 curemControllers.factory('leadFactory', ['$resource', function($resource) {
