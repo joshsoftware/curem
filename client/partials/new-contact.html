@@ -1,1 +1,93 @@
-TODO: New contact
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Curem</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="#">Contacts</a></li>
+        <li><a href="#/leads">Leads</a></li>
+        <li class="dropdown">
+          <a href="" class="dropdown-toggle" data-toggle="dropdown">New<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#/new/contact">New Contact</a></li>
+            <li><a href="#/new/lead">New Lead</a></li>
+          </ul>
+        </li>
+      </ul>
+      <form class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Hari haran <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Log out</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <form class="form-horizontal" role="form">
+	<div class="form-group">
+	  <label class="col-sm-2 control-label" for="name">Name</label>
+	  <div class="col-sm-10">
+	    <input type="text" placeholder="Name" id="name" class="col-sm-10 form-control" ng-model="contact.person" required/>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label class="col-sm-2 control-label" for="email">Email</label>
+	  <div class="col-sm-10">
+	    <input type="email" placeholder="Email" id="email" class="form-control" ng-model="contact.email" required/>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label class="col-sm-2 control-label" for="company">Company</label>
+	  <div class="col-sm-10">
+	    <input type="text" placeholder="Company" id="company" class="form-control" ng-model="contact.company" />
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label class="col-sm-2 control-label" for="phone">Phone</label>
+	  <div class="col-sm-10">
+	    <input type="tel" placeholder="Phone" id="phone" class="form-control" ng-model="contact.phone" />
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label class="col-sm-2 control-label" for="skypeid">Skype ID</label>
+	  <div class="col-sm-10">
+	    <input type="text" placeholder="Skype ID" id="skypeid" class="form-control" ng-model="contact.skypeid" />
+	  </div>
+	</div>
+	<div class="form-group">
+	  <div class="col-sm-2"></div>
+	  <div class="col-sm-10">
+	    <a ng-click="createNewContact()" class="btn btn-small btn-primary">create new user</a>
+	  </div>
+	</div>
+      </form>
+    </div>
+    <div class="col-md-6">
+    </div>
+  </div> <!-- /.row -->
+</div> <!-- /.container -->
