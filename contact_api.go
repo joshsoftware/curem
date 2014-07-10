@@ -120,6 +120,7 @@ func postContactsHandler(w http.ResponseWriter, r *http.Request) {
 //   "country": "USA"
 // }
 func getContactHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
 	slug := vars["slug"]
