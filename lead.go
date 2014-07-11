@@ -77,6 +77,9 @@ func (l *lead) copyIncomingFields(i *incomingLead) error {
 }
 
 func (l *lead) Validate() error {
+	if l.ContactID == "" {
+		return errors.New("contact ID can't be empty")
+	}
 	if l.Source == "" {
 		return errors.New("source can't be empty")
 	}
