@@ -15,6 +15,10 @@ curemApp.config(['$routeProvider',
 	      templateUrl: 'partials/new-contact.html',
 	      controller: 'newContactController'
 	  }).
+	  when('/leads', {
+	      templateUrl: 'partials/leads-list.html',
+	      controller: 'leadsController'
+	  }).
 	  otherwise ({
 	      redirectTo: '/contacts'
 	  });
