@@ -62,7 +62,7 @@ curemControllers.controller('leadDetailController', ['$scope', '$routeParams', '
     console.log($scope.lead);
 }]);
 
-curemControllers.controller('newLeadController', ['$scope', 'leadFactory', function($scope, leadFactory) {
+curemControllers.controller('newLeadController', ['$scope', '$location', 'leadFactory', function($scope, $location, leadFactory) {
     $scope.createNewLead = function() {
 	leadFactory.save($scope.lead);
 	$location.path('/leads');
