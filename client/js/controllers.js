@@ -23,7 +23,7 @@ curemControllers.controller('contactDetailController', ['$scope','$routeParams',
 
     contactFactory.get({slug:$routeParams.slug})
     .$promise.then(function(contact) {
-	$scope.contact = contact
+	$scope.contact = contact;
     });
 
 }]);
@@ -49,13 +49,22 @@ curemControllers.controller('leadsController', ['$scope', 'leadFactory', functio
 
     $scope.leads = leadFactory.query();
 
-    console.log($scope.leads)
+    console.log($scope.leads);
 }]);
 
-// Stub for leadDetailController
-curemControllers.controller('leadDetailController', ['$scope','leadFactory', function($scope, leadFactory) {
+curemControllers.controller('leadDetailController', ['$scope', '$routeParams', 'leadFactory', function($scope, $routeParams, leadFactory) {
+    $scope.id = $routeParams.id;
+
+    leadFactory.get({id: $routeParams.id})
+    .$promise.then(function(lead) {
+	$scope.lead = lead;
+    });
+    console.log($scope.lead);
 }]);
 
-// Stub for newLeadController
 curemControllers.controller('newLeadController', ['$scope', 'leadFactory', function($scope, leadFactory) {
+    $scope.createNewLead = function() {
+	leadFactory.save($scope.lead);
+	$location.path('/leads');
+    };
 }]);
