@@ -51,3 +51,11 @@ curemControllers.controller('leadsController', ['$scope', 'leadFactory', functio
 
     console.log($scope.leads)
 }]);
+
+// Stub for leadDetailController
+curemControllers.controller('leadDetailController', ['$scope','leadFactory', function($scope, leadFactory) {
+}]);
+
+// Stub for newLeadController
+curemControllers.controller('newLeadController', ['$scope', 'leadFactory', function($scope, leadFactory) {
+}]);
