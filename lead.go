@@ -47,7 +47,7 @@ func (l *lead) copyIncomingFields(i *incomingLead) error {
 		}
 	}
 	if i.ContactID != nil {
-		l.ID = *i.ID
+		l.ContactID = *i.ContactID
 	}
 	if i.Source != nil {
 		l.Source = *i.Source
