@@ -14,7 +14,7 @@ var statusOptions = []string{"Won", "Lost", "Warming Up", "Cooling Down", "Tech"
 
 type lead struct {
 	ID                 bson.ObjectId `bson:"_id"                          json:"id"`
-	ContactID          bson.ObjectId `bson:"contactID,omitempty"          json:"contactID,omitempty"`
+	ContactSlug        string        `bson:"contactSlug,omitempty"        json:"contactSlug,omitempty"`
 	Source             string        `bson:"source,omitempty"             json:"source,omitempty"`
 	Owner              string        `bson:"owner,omitempty"              json:"owner,omitempty"`
 	Status             string        `bson:"status,omitempty"             json:"status,omitempty"`
@@ -29,7 +29,7 @@ type lead struct {
 
 type incomingLead struct {
 	ID                 *bson.ObjectId `json:"id"`
-	ContactID          *bson.ObjectId `json:"contactID,omitempty"`
+	ContactSlug        *string        `json:"contactSlug,omitempty"`
 	Source             *string        `json:"source,omitempty"`
 	Owner              *string        `json:"owner,omitempty"`
 	Status             *string        `json:"status,omitempty"`
@@ -46,8 +46,8 @@ func (l *lead) copyIncomingFields(i *incomingLead) error {
 			return errors.New("id doesn't match")
 		}
 	}
-	if i.ContactID != nil {
-		l.ContactID = *i.ContactID
+	if i.ContactSlug != nil {
+		l.ContactSlug = *i.ContactSlug
 	}
 	if i.Source != nil {
 		l.Source = *i.Source
@@ -77,8 +77,8 @@ func (l *lead) copyIncomingFields(i *incomingLead) error {
 }
 
 func (l *lead) Validate() error {
-	if l.ContactID == "" {
-		return errors.New("contact ID can't be empty")
+	if l.ContactSlug == "" {
+		return errors.New("contact slug can't be empty")
 	}
 	if l.Source == "" {
 		return errors.New("source can't be empty")
@@ -107,11 +107,11 @@ func isStatusValid(s string) bool {
 // NewLead takes the fields of a lead, initializes a struct of lead type and returns
 // the pointer to that struct.
 // Also, It inserts the lead object into the database.
-func NewLead(cid bson.ObjectId, source, owner, status string, teamsize, rate, duration float64,
+func NewLead(cslug, source, owner, status string, teamsize, rate, duration float64,
 	start string, comments []string) (*lead, error) {
 	doc := lead{
 		ID:                 bson.NewObjectId(),
-		ContactID:          cid,
+		ContactSlug:        cslug,
 		Source:             strings.Title(source),
 		Owner:              strings.Title(owner),
 		Status:             strings.Title(status),

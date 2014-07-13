@@ -6,12 +6,10 @@ import (
 	"github.com/joshsoftware/curem/config"
 
 	"log"
-
-	"labix.org/v2/mgo/bson"
 )
 
 func TestNewLead(t *testing.T) {
-	f := fakeContactID()
+	f := fakeContactSlug()
 	fakeLead, err := NewLead(
 		f,
 		"Web",
@@ -27,8 +25,7 @@ func TestNewLead(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 
-	var refContact contact
-	err = config.ContactsCollection.FindId(fakeLead.ContactID).One(&refContact)
+	_, err = GetContactBySlug(fakeLead.ContactSlug)
 	if err != nil {
 		t.Errorf("%s", err)
 	}
@@ -38,14 +35,14 @@ func TestNewLead(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 
-	// Drop collection created by fakeContactID()
+	// Drop collection created by fakeContactSlug()
 	err = config.ContactsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
 	}
 }
 
-func fakeContactID() bson.ObjectId {
+func fakeContactSlug() string {
 	fakeContact, err := NewContact(
 		"Encom Inc.",
 		"Flynn",
@@ -57,11 +54,11 @@ func fakeContactID() bson.ObjectId {
 	if err != nil {
 		log.Println(err)
 	}
-	return fakeContact.ID
+	return fakeContact.Slug
 }
 
 func TestGetLead(t *testing.T) {
-	f := fakeContactID()
+	f := fakeContactSlug()
 	fakeLead, err := NewLead(
 		f,
 		"Web",
@@ -88,7 +85,7 @@ func TestGetLead(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	// Drop collection created by fakeContactID()
+	// Drop collection created by fakeContactSlug()
 	err = config.ContactsCollection.DropCollection()
 	if err != nil {
 		t.Errorf("%s", err)
@@ -96,7 +93,7 @@ func TestGetLead(t *testing.T) {
 }
 
 func TestGetAllLeads(t *testing.T) {
-	f := fakeContactID()
+	f := fakeContactSlug()
 	_, err := NewLead(
 		f,
 		"Web",
@@ -111,7 +108,7 @@ func TestGetAllLeads(t *testing.T) {
 	if err != nil {
 		t.Errorf("%s", err)
 	}
-	f = fakeContactID()
+	f = fakeContactSlug()
 	_, err = NewLead(
 		f,
 		"Referral",
@@ -144,7 +141,7 @@ func TestGetAllLeads(t *testing.T) {
 }
 
 func TestUpdateLead(t *testing.T) {
-	f := fakeContactID()
+	f := fakeContactSlug()
 	fakeLead, err := NewLead(
 		f,
 		"Web",
@@ -182,7 +179,7 @@ func TestUpdateLead(t *testing.T) {
 }
 
 func TestDeleteLead(t *testing.T) {
-	f := fakeContactID()
+	f := fakeContactSlug()
 	fakeLead, err := NewLead(
 		f,
 		"Web",

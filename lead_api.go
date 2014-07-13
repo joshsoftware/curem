@@ -45,7 +45,7 @@ func postLeadHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	n, err := NewLead(l.ContactID, l.Source, l.Owner, l.Status, l.TeamSize, l.RatePerHour,
+	n, err := NewLead(l.ContactSlug, l.Source, l.Owner, l.Status, l.TeamSize, l.RatePerHour,
 		l.DurationInMonths, l.EstimatedStartDate, l.Comments)
 	if err != nil {
 		log.Println(err)
