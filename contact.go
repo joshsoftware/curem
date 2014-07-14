@@ -170,9 +170,6 @@ func GetContactBySlug(slug string) (*contact, error) {
 		return &contact{}, errors.New("no contact")
 	}
 
-	if len(c) > 1 {
-		return &contact{}, errors.New("more than 1 contact found")
-	}
 	return &c[0], nil
 }
 
