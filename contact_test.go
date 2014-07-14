@@ -277,3 +277,24 @@ func TestContactSlugExists(t *testing.T) {
 		t.Errorf("%s", err)
 	}
 }
+
+func TestGetLeadsOfContact(t *testing.T) {
+	c, err := NewContact(
+		"Encom Inc.",
+		"Sam Flynn",
+		"samflynn@encom.com",
+		"103-345-456",
+		"sam_flynn",
+		"USA",
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	_, err = NewLead(c.Slug, "Web", "Gautam", "Won", 3, 5, 2, "3rd July, 2014", nil)
+	_, err = NewLead(c.Slug, "Referral", "Sethu", "Warming Up", 3, 5, 2, "3rd July, 2014", nil)
+	x, err := c.Leads()
+	if len(x) != 2 {
+		t.Errorf("expecting 2 leads but got %d", len(x))
+	}
+	dropCollections(t)
+}
