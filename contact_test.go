@@ -187,6 +187,26 @@ func TestUpdateContact(t *testing.T) {
 	dropContactsCollection(t)
 }
 
+func TestUpdateContactValidationCheck(t *testing.T) {
+	fakeContact, err := NewContact(
+		"Encom Inc.",
+		"Flynn",
+		"flynn@encom.com",
+		"",
+		"",
+		"USA",
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	fakeContact.Email = "India"
+	err = fakeContact.Update()
+	if err == nil {
+		t.Errorf("error shouldn't be nil when updated with an invalid email address")
+	}
+	dropContactsCollection(t)
+}
+
 func TestDelete(t *testing.T) {
 	fakeContact, err := NewContact(
 		"Encom Inc.",
