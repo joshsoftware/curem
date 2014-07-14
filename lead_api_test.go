@@ -115,6 +115,51 @@ func TestPostLeadHandler(t *testing.T) {
 	}
 }
 
+func TestPatchLeadHandler(t *testing.T) {
+	f := fakeContactSlug()
+	l, err := NewLead(
+		f,
+		"Web",
+		"Hari",
+		"Warming Up",
+		2.5,
+		20,
+		3,
+		"25th June, 2014",
+		[]string{"Call back", "Based in mumbai"},
+	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	ts := httptest.NewServer(r)
+	defer ts.Close()
+	var b bytes.Buffer
+	b.Write([]byte(`{"source":"Referral"}`))
+	req, err := http.NewRequest("PATCH", ts.URL+"/leads/"+l.ID.Hex(), &b)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	defer resp.Body.Close()
+	var x []lead
+	if resp.StatusCode == 200 {
+		x, err = GetAllLeads()
+		if err != nil {
+			t.Errorf("%s", err)
+		}
+	}
+	if len(x) != 1 {
+		t.Errorf("expected 1 lead but got %d leads", len(x))
+	}
+	if x[0].Source != "Referral" {
+		t.Errorf("expected source to be Referral, but got %s", x[0].Source)
+	}
+	dropCollections(t)
+}
+
 func TestPostLeadHandlerError(t *testing.T) {
 	ts := httptest.NewServer(r)
 	defer ts.Close()
