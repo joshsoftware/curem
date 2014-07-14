@@ -9,7 +9,7 @@ import (
 func main() {
 
 	c := make(map[string]string)
-	c["name"] = "test"
+	c["name"] = "dev"
 	c["url"] = "localhost"
 	c["leads"] = "newlead"
 	c["contacts"] = "newcontact"
