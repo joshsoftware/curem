@@ -8,8 +8,6 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
-
-	"github.com/joshsoftware/curem/config"
 )
 
 func TestGetContactsHandler(t *testing.T) {
@@ -41,10 +39,7 @@ func TestGetContactsHandler(t *testing.T) {
 	if bodystring != string(y) {
 		t.Errorf("expected %s, but got %s", string(y), bodystring)
 	}
-	err = config.ContactsCollection.DropCollection()
-	if err != nil {
-		t.Errorf("%s", err)
-	}
+	dropContactsCollection(t)
 }
 
 func TestPostContactsHandler(t *testing.T) {
@@ -72,10 +67,7 @@ func TestPostContactsHandler(t *testing.T) {
 		} else {
 			t.Errorf("expected 1 contact, but got %d contacts", len(x))
 		}
-		err = config.ContactsCollection.DropCollection()
-		if err != nil {
-			t.Errorf("%s", err)
-		}
+		dropContactsCollection(t)
 
 	} else {
 		t.Errorf("expected response code to be 201 but got %d", resp.StatusCode)
@@ -110,10 +102,7 @@ func TestGetContactHandler(t *testing.T) {
 	if bodystring != string(y) {
 		t.Errorf("expected %s, but got %s", string(y), bodystring)
 	}
-	err = config.ContactsCollection.DropCollection()
-	if err != nil {
-		t.Errorf("%s", err)
-	}
+	dropContactsCollection(t)
 }
 
 func TestPatchContactHandler(t *testing.T) {
@@ -159,10 +148,7 @@ func TestPatchContactHandler(t *testing.T) {
 		} else {
 			t.Errorf("expected 1 contact, but got %d contacts", len(x))
 		}
-		err = config.ContactsCollection.DropCollection()
-		if err != nil {
-			t.Errorf("%s", err)
-		}
+		dropContactsCollection(t)
 	} else {
 		t.Errorf("expected response code to be 200, but got %d", resp.StatusCode)
 	}
@@ -201,8 +187,5 @@ func TestDeleteContactHandler(t *testing.T) {
 	if len(x) != 0 {
 		t.Errorf("expected 0 contacts after delete, but got %d", len(x))
 	}
-	err = config.ContactsCollection.DropCollection()
-	if err != nil {
-		t.Errorf("%s", err)
-	}
+	dropContactsCollection(t)
 }

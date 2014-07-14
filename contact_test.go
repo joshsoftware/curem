@@ -31,10 +31,7 @@ func TestNewContact(t *testing.T) {
 	if fetchedContact != *fakeContact {
 		t.Errorf("inserted contact is not the fetched contact")
 	}
-	err = config.ContactsCollection.DropCollection()
-	if err != nil {
-		t.Errorf("%s", err)
-	}
+	dropContactsCollection(t)
 }
 
 func TestValidateNewContact(t *testing.T) {
@@ -93,10 +90,7 @@ func TestGetContactByID(t *testing.T) {
 	if *fakeContact != *fetchedContact {
 		t.Errorf("Expected %+v, but got %+v\n", *fakeContact, *fetchedContact)
 	}
-	err = config.ContactsCollection.DropCollection()
-	if err != nil {
-		t.Errorf("%s", err)
-	}
+	dropContactsCollection(t)
 }
 
 func TestGetNonExistingContactByID(t *testing.T) {
@@ -125,10 +119,7 @@ func TestGetContactBySlug(t *testing.T) {
 	if *c != *f {
 		t.Errorf("expected %+v, but got %+v", *c, *f)
 	}
-	err = config.ContactsCollection.DropCollection()
-	if err != nil {
-		t.Errorf("%s", err)
-	}
+	dropContactsCollection(t)
 }
 
 func TestGetNonExistingContactBySlug(t *testing.T) {
@@ -169,10 +160,7 @@ func TestGetAllContacts(t *testing.T) {
 	if len(fetchedContacts) != 2 {
 		t.Errorf("expected 2 contacts, but got %d", len(fetchedContacts))
 	}
-	err = config.ContactsCollection.DropCollection()
-	if err != nil {
-		t.Errorf("%s", err)
-	}
+	dropContactsCollection(t)
 }
 
 func TestUpdateContact(t *testing.T) {
@@ -196,10 +184,7 @@ func TestUpdateContact(t *testing.T) {
 	if fetchedContact.Country != "India" {
 		t.Errorf("%s", "contact not updated")
 	}
-	err = config.ContactsCollection.DropCollection()
-	if err != nil {
-		t.Errorf("%s", err)
-	}
+	dropContactsCollection(t)
 }
 
 func TestDelete(t *testing.T) {
@@ -225,10 +210,7 @@ func TestDelete(t *testing.T) {
 	if n != 0 {
 		t.Errorf("expected 0 documents in the collection, but found %d", n)
 	}
-	err = config.ContactsCollection.DropCollection()
-	if err != nil {
-		t.Errorf("%s", err)
-	}
+	dropContactsCollection(t)
 }
 
 func TestSlugifyContact(t *testing.T) {
@@ -240,6 +222,9 @@ func TestSlugifyContact(t *testing.T) {
 		"sam_flynn",
 		"USA",
 	)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
 	if c.Slug != "sam-flynn" {
 		t.Errorf("expected slug to be %s, but got %s", "sam-flynn", c.Slug)
 	}
@@ -251,10 +236,7 @@ func TestSlugifyContact(t *testing.T) {
 	if d.Slug == "sam-flynn" {
 		t.Errorf("expected something other than %s as slug", "sam-flynn")
 	}
-	err = config.ContactsCollection.DropCollection()
-	if err != nil {
-		t.Errorf("%s", err)
-	}
+	dropContactsCollection(t)
 }
 
 func TestContactSlugExists(t *testing.T) {
@@ -272,10 +254,7 @@ func TestContactSlugExists(t *testing.T) {
 	if !contactSlugExists(c.Slug) {
 		t.Errorf("%s", "expected contactSlugExists to return true but returns false")
 	}
-	err = config.ContactsCollection.DropCollection()
-	if err != nil {
-		t.Errorf("%s", err)
-	}
+	dropContactsCollection(t)
 }
 
 func TestGetLeadsOfContact(t *testing.T) {
