@@ -115,6 +115,21 @@ func TestPostLeadHandler(t *testing.T) {
 	}
 }
 
+func TestPostLeadHandlerError(t *testing.T) {
+	ts := httptest.NewServer(r)
+	defer ts.Close()
+	var b bytes.Buffer
+	b.Write([]byte(`{"contactSlug":"hari-haran","owner":"Gautam","status":"Warming Up"}`))
+	resp, err := http.Post(ts.URL+"/leads", "encoding/json", &b)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 500 {
+		t.Errorf("expecting response code 500, but got %d", resp.StatusCode)
+	}
+}
+
 func TestDeleteLeadHandler(t *testing.T) {
 	ts := httptest.NewServer(r)
 	defer ts.Close()
