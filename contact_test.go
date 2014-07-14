@@ -142,6 +142,13 @@ func TestGetContactBySlug(t *testing.T) {
 	}
 }
 
+func TestGetNonExistingContactBySlug(t *testing.T) {
+	_, err := GetContactBySlug("nlvnjrelvenliqas")
+	if err == nil {
+		t.Errorf("%s", "error shouldn't be nil when we try a fetch a non existent contact")
+	}
+}
+
 func TestGetAllContacts(t *testing.T) {
 	_, err := NewContact(
 		"Encom Inc.",
