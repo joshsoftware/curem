@@ -51,6 +51,7 @@ type contact struct {
 // Using pointer types, we can differentiate intentional nil value fields
 // and empty fields.
 // This type is used *only* for decoding json obtained from a PATCH request.
+// If you don't want a field to be updated, remove the field from this type.
 type incomingContact struct {
 	ID      *bson.ObjectId `json:"id"`
 	Company *string        `json:"company,omitempty"`
@@ -233,4 +234,14 @@ func contactSlugExists(slug string) bool {
 		return false
 	}
 	return true
+}
+
+// Leads returns all the leads of a particular contact.
+func (c *contact) Leads() ([]lead, error) {
+	var l []lead
+	err := config.LeadsCollection.Find(bson.M{"contactSlug": c.Slug}).All(&l)
+	if err != nil {
+		return l, err
+	}
+	return l, nil
 }
