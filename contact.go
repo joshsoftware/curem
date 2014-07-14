@@ -47,7 +47,8 @@ type contact struct {
 
 // incomingContact type is used for handling PATCH requests.
 // To understand why we are using pointer types for fields,
-// refer to http://blog.golang.org/json-and-go .
+// refer to http://blog.golang.org/json-and-go and
+// https://willnorris.com/2014/05/go-rest-apis-and-pointers .
 // Using pointer types, we can differentiate intentional nil value fields
 // and empty fields.
 // This type is used *only* for decoding json obtained from a PATCH request.
