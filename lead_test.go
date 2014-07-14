@@ -8,6 +8,15 @@ import (
 	"log"
 )
 
+func TestIsStatusValid(t *testing.T) {
+	if isStatusValid("asdfgh") {
+		t.Errorf("status asdfgh should be invalid")
+	}
+	if !isStatusValid("Won") {
+		t.Errorf("status Won should be valid")
+	}
+}
+
 func TestNewLead(t *testing.T) {
 	f := fakeContactSlug()
 	fakeLead, err := NewLead(
