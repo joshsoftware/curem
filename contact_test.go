@@ -110,6 +110,13 @@ func TestGetContactByID(t *testing.T) {
 	}
 }
 
+func TestGetNonExistingContactByID(t *testing.T) {
+	_, err := GetContactByID(bson.ObjectIdHex("53b112bde3bdea2642000002"))
+	if err == nil {
+		t.Errorf("%s", "error shouldn't be nil when we try a fetch a non existent contact")
+	}
+}
+
 func TestGetContactBySlug(t *testing.T) {
 	c, err := NewContact(
 		"Encom Inc.",
