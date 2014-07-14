@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -72,6 +73,46 @@ func TestGetLeadHandler(t *testing.T) {
 		t.Errorf("expected %s, but got %s", string(y), bodystring)
 	}
 	dropCollections(t)
+}
+
+func TestPostLeadHandler(t *testing.T) {
+	_, err := NewContact(
+		"Encom Inc.",
+		"Hari haran",
+		"hari@encom.com",
+		"",
+		"",
+		"USA",
+	)
+	ts := httptest.NewServer(r)
+	defer ts.Close()
+	var b bytes.Buffer
+	b.Write([]byte(`{"contactSlug":"hari-haran","source":"Web","owner":"Gautam","status":"Warming Up"}`))
+	resp, err := http.Post(ts.URL+"/leads", "encoding/json", &b)
+	if err != nil {
+		t.Errorf("%s", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode == 201 {
+		x, err := GetAllLeads()
+		if err != nil {
+			t.Errorf("%s", err)
+		}
+		if len(x) == 1 {
+			if x[0].ContactSlug != "hari-haran" {
+				t.Errorf("expected contact slug to be hari-haran, but got %s", x[0].ContactSlug)
+			}
+			if x[0].Source != "Web" {
+				t.Errorf("expected source to be Web, but got %s", x[0].Source)
+			}
+		} else {
+			t.Errorf("expected 1 lead, but got %d contacts", len(x))
+		}
+		dropCollections(t)
+
+	} else {
+		t.Errorf("expected response code to be 201 but got %d", resp.StatusCode)
+	}
 }
 
 func TestDeleteLeadHandler(t *testing.T) {
